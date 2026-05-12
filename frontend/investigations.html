@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<title>KQL Vault — Investigations</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/investigations.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.css">
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="inv-topbar">
+  <a class="inv-topbar-brand" href="/" title="KQL Vault — Retour à l'accueil">
+    <svg width="28" height="28" viewBox="40 16 176 228" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+      <defs><linearGradient id="invG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs>
+      <path d="M128 16 L216 56 L216 120 C216 184 128 240 128 240 C128 240 40 184 40 120 L40 56 Z" fill="none" stroke="url(#invG)" stroke-width="18" stroke-linejoin="round"/>
+      <polyline points="88,104 120,128 88,152" fill="none" stroke="#0ea5e9" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="128" y1="152" x2="168" y2="152" stroke="#0ea5e9" stroke-width="18" stroke-linecap="round"/>
+    </svg>
+    <span style="font-size:15px;font-weight:800;letter-spacing:-.01em">KQL<span style="color:#0ea5e9">ab</span></span>
+  </a>
+  <span class="inv-topbar-sep">›</span>
+  <span class="inv-topbar-crumb" id="inv-breadcrumb">Investigations</span>
+  <button class="inv-sidebar-toggle" id="inv-sidebar-toggle" aria-label="Toggle investigations list">☰ Investigations</button>
+  <div class="inv-topbar-actions" id="inv-topbar-actions"></div>
+</div>
+
+<div id="toast-el"></div>
+
+<!-- 3-column shell -->
+<div class="inv-shell">
+
+  <!-- Left sidebar: list + filters -->
+  <aside class="inv-sidebar" id="inv-sidebar">
+    <div class="inv-sidebar-hdr">
+      <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-tertiary)">Investigations</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="pri" id="btn-new-inv" style="padding:4px 11px;font-size:12px">+ New</button>
+        <button class="inv-sidebar-collapse-btn" id="btn-collapse-sidebar" title="Collapse sidebar" aria-label="Collapse sidebar">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9,2 4,7 9,12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="inv-sidebar-search">
+      <input type="text" id="inv-search" class="inv-search-input" placeholder="🔍 Search...">
+    </div>
+    <div class="inv-filters" id="inv-filters">
+      <button class="inv-filter-btn active" data-status="all">All</button>
+      <button class="inv-filter-btn" data-status="open">Open</button>
+      <button class="inv-filter-btn" data-status="in-progress">Active</button>
+      <button class="inv-filter-btn" data-status="closed">Closed</button>
+    </div>
+    <div class="inv-list" id="inv-list"></div>
+  </aside>
+
+  <!-- Sidebar expand tab (visible only when sidebar collapsed) -->
+  <button class="inv-sidebar-expand-tab" id="btn-expand-sidebar" title="Expand sidebar" aria-label="Expand sidebar">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="5,2 10,7 5,12"/>
+    </svg>
+  </button>
+
+  <!-- Main content area -->
+  <main class="inv-main" id="inv-main"></main>
+
+  <!-- Right meta panel -->
+  <aside class="inv-right" id="inv-right"></aside>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script>
+  if (window.Prism) {
+    Prism.manual = true;
+    Prism.plugins.autoloader.languages_path =
+      'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/';
+    Prism.plugins.autoloader.loadLanguages(
+      ['kusto', 'powershell', 'python', 'json', 'yaml', 'bash', 'sql'],
+      function () { /* grammars pre-cached */ }
+    );
+  }
+</script>
+<script src="js/i18n.js"></script>
+<script src="js/data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/rich-editor.js"></script>
+<script src="js/investigations.js"></script>
+</body>
+</html>

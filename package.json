@@ -1,0 +1,31 @@
+{
+  "name": "kqlvault",
+  "version": "2.1.1",
+  "description": "Collaborative KQL query manager for SOC teams",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js",
+    "keygen": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
+    "sync-repos": "node scripts/sync-repos.js",
+    "release:patch": "npm version patch && git tag v%npm_package_version%",
+    "release:minor": "npm version minor && git tag v%npm_package_version%",
+    "release:major": "npm version major && git tag v%npm_package_version%"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.6.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.7",
+    "docx": "^9.6.1",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^8.0.0",
+    "js-yaml": "^4.1.1",
+    "pdfkit": "^0.18.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

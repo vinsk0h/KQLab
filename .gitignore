@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Database files
+backend/db/*.db
+backend/db/*.db-wal
+backend/db/*.db-shm
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Runtime
+pids/
+*.pid
+*.seed
+
+# Test artifacts
+*.pdf
+
+# Claude Code internal files
+.claude/
+CLAUDE.md
+PUBLISHING_GUIDE.md

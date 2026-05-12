@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<title>KQL Vault — Admin</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div class="adm-topbar">
+  <a class="adm-brand" href="/">
+    <svg width="24" height="24" viewBox="40 16 176 228" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="admG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs>
+      <path d="M128 16 L216 56 L216 120 C216 184 128 240 128 240 C128 240 40 184 40 120 L40 56 Z" fill="none" stroke="url(#admG)" stroke-width="18" stroke-linejoin="round"/>
+      <polyline points="88,104 120,128 88,152" fill="none" stroke="#0ea5e9" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="128" y1="152" x2="168" y2="152" stroke="#0ea5e9" stroke-width="18" stroke-linecap="round"/>
+    </svg>
+    <span style="font-size:14px;font-weight:900">KQL<span style="color:#0ea5e9">ab</span></span>
+  </a>
+  <span class="adm-topbar-sep">›</span>
+  <span class="adm-topbar-crumb">Admin Portal</span>
+  <div class="adm-topbar-actions" id="adm-topbar-actions"></div>
+</div>
+
+<div id="toast-el"></div>
+
+<div class="adm-shell">
+  <!-- Left nav -->
+  <aside class="adm-nav">
+    <div class="adm-nav-section">ADMINISTRATION</div>
+    <a class="adm-nav-item active" href="#templates" data-section="templates">
+      <span>📋</span><span>Report Templates</span>
+    </a>
+    <a class="adm-nav-item" href="/" style="margin-top:auto">
+      <span>←</span><span>Back to Vault</span>
+    </a>
+  </aside>
+
+  <!-- Main -->
+  <main class="adm-main" id="adm-main">
+    <div id="section-templates" class="adm-section">
+      <div class="adm-section-hdr">
+        <div>
+          <h1 class="adm-section-title">Report Templates</h1>
+          <p class="adm-section-sub">Manage report templates used in the Investigation module. Each template defines the sections, type, and branding defaults.</p>
+        </div>
+        <button class="pri" id="btn-new-template">+ New template</button>
+      </div>
+      <div id="templates-grid" class="templates-grid">
+        <div style="padding:40px;text-align:center;color:var(--t5)">Loading templates…</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Create/Edit Template -->
+<div id="tpl-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:center;justify-content:center;padding:16px">
+  <div style="background:var(--s1);border:1px solid var(--bd);border-radius:14px;width:100%;max-width:560px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:16px 22px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+      <h2 style="font-size:16px;margin:0" id="tpl-modal-title">New template</h2>
+      <button id="tpl-modal-close" style="background:none;border:none;color:var(--t4);font-size:22px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="padding:20px 22px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="lbl">Template name *</label><input id="tpl-name" class="input" style="width:100%" placeholder="SOC Incident Report"></div>
+        <div><label class="lbl">Icon</label><input id="tpl-icon" class="input" style="width:100%" placeholder="📋" maxlength="4" value="📋"></div>
+      </div>
+      <div><label class="lbl">Type</label>
+        <select id="tpl-type" style="width:100%">
+          <option value="blueteam">🔵 Blue Team / SOC</option>
+          <option value="redteam">🔴 Red Team</option>
+          <option value="vapt">🟠 VAPT</option>
+          <option value="phishing">🎣 Phishing Simulation</option>
+          <option value="audit">✅ Security Audit</option>
+          <option value="custom">📋 Custom</option>
+        </select>
+      </div>
+      <div><label class="lbl">Description</label><textarea id="tpl-desc" class="input" style="width:100%;height:70px;resize:vertical" placeholder="Short description of this template's purpose…"></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="lbl">Accent color</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="color" id="tpl-color" value="#0ea5e9" style="width:44px;height:36px;border-radius:6px;cursor:pointer;border:1px solid var(--bd);padding:2px">
+            <input id="tpl-color-text" class="input" style="flex:1" placeholder="#0ea5e9" maxlength="7">
+          </div>
+        </div>
+        <div><label class="lbl">Default company name</label><input id="tpl-company" class="input" style="width:100%" placeholder="ACME Corp"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="tpl-default"><label for="tpl-default" style="font-size:13px;cursor:pointer">Set as default template</label>
+      </div>
+    </div>
+    <div style="padding:14px 22px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0">
+      <button id="tpl-modal-cancel">Cancel</button>
+      <button class="pri" id="tpl-modal-save">Save template</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Edit Sections -->
+<div id="sec-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:center;justify-content:center;padding:16px">
+  <div style="background:var(--s1);border:1px solid var(--bd);border-radius:14px;width:100%;max-width:680px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:16px 22px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+      <h2 style="font-size:16px;margin:0" id="sec-modal-title">Sections</h2>
+      <button id="sec-modal-close" style="background:none;border:none;color:var(--t4);font-size:22px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="padding:16px 22px;overflow-y:auto;flex:1">
+      <div id="sec-list"></div>
+      <button id="btn-add-section" style="width:100%;margin-top:12px;padding:8px;border:1px dashed var(--bd);border-radius:8px;background:none;color:var(--t4);cursor:pointer;font-size:13px">+ Add section</button>
+    </div>
+    <div style="padding:14px 22px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0">
+      <button id="sec-modal-close2">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/api.js"></script>
+<script src="js/admin-templates.js"></script>
+</body>
+</html>

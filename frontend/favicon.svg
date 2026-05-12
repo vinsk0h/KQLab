@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 16 176 228">
+  <defs>
+    <linearGradient id="fvG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <style>
+      @media (prefers-color-scheme: light) {
+        .chev { stroke: #0ea5e9; }
+        .cur  { stroke: #0ea5e9; }
+      }
+    </style>
+  </defs>
+  <path d="M128 16 L216 56 L216 120 C216 184 128 240 128 240 C128 240 40 184 40 120 L40 56 Z"
+        fill="none" stroke="url(#fvG)" stroke-width="18" stroke-linejoin="round"/>
+  <polyline class="chev" points="88,104 120,128 88,152"
+        fill="none" stroke="#0ea5e9" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <line class="cur" x1="128" y1="152" x2="168" y2="152"
+        stroke="#0ea5e9" stroke-width="18" stroke-linecap="round"/>
+</svg>

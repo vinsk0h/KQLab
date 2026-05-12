@@ -1,0 +1,780 @@
+════════════════════════════════════════════════════════════════════════
+KQL VAULT — i18n AUDIT REPORT
+2026-05-03T17:34:09.611Z
+════════════════════════════════════════════════════════════════════════
+
+## COVERAGE SUMMARY
+  T() calls (unique)     : 467
+  DICTS.fr keys          : 597
+  DICTS.en keys          : 597
+  LANG.fr keys (legacy)  : 408
+  LANG.en keys (legacy)  : 408
+  T() covered by DICTS   : 464 / 467 (99.4%)
+  Missing from DICTS     : 3
+  Missing FR only        : 0
+  Missing EN only        : 0
+  Orphaned (unused)      : 133
+  LANG-only (not DICTS)  : FR=0, EN=0
+
+## MISSING FROM DICTS (T() called but no FR+EN key)
+  [inv] (1 keys)
+    - inv.status.
+  [var] (1 keys)
+    - var.
+  [vars] (1 keys)
+    - vars.group.
+
+## MISSING FROM FR (exists in EN, absent in FR)
+  ✓ None
+
+## MISSING FROM EN (exists in FR, absent in EN)
+  ✓ None
+
+## ORPHANED KEYS (in DICTS but never called by T())
+  - add_member
+  - admin_apply
+  - admin_backup_btn
+  - admin_backup_desc
+  - admin_bulk_delete
+  - admin_bulk_severity
+  - admin_clear
+  - admin_col_action
+  - admin_col_date
+  - admin_col_findings
+  - admin_col_iocs
+  - admin_col_ip
+  - admin_col_severity
+  - admin_col_title
+  - admin_col_user
+  - admin_db_active
+  - admin_db_not_set
+  - admin_delete_team
+  - admin_empty_repos
+  - admin_empty_watch
+  - admin_fingerprint
+  - admin_from_date
+  - admin_no_team
+  - admin_ph_env_name
+  - admin_ph_gh_owner
+  - admin_ph_gh_repo
+  - admin_ph_path_filter
+  - admin_ph_repo_name
+  - admin_ph_team_name
+  - admin_search_queries
+  - admin_select_user
+  - admin_team_name
+  - admin_to_date
+  - admin_user_display
+  - admin_user_login
+  - admin_user_role
+  - admin_user_team
+  - admin_watch_interval
+  - admin_watch_minutes
+  - all_teams
+  - are_you_sure
+  - bulk_actions
+  - bulk_del_btn
+  - bulk_del_ok
+  - bulk_move_ok
+  - bulk_selected
+  - bulk_sev_ok
+  - check_compatibility
+  - collections
+  - cr_sans
+  - cyber_alerts
+  - det_compatible_assumed
+  - det_no_detail
+  - det_resolved_lbl
+  - dismiss
+  - env_active
+  - env_cancel
+  - env_name
+  - env_platform
+  - findings.modal.btn_add
+  - findings.modal.btn_save
+  - findings.modal.title_edit
+  - findings.modal.title_new
+  - inv.error.save
+  - inv.field.conclusion
+  - inv.field.created
+  - inv.field.no_conclusion
+  - inv.field.summary
+  - inv.field.updated
+  - inv.filter.active
+  - inv.filter.all
+  - inv.filter.closed
+  - inv.filter.open
+  - inv.tab.findings
+  - inv.tab.iocs
+  - inv.tab.overview
+  - inv.tab.report
+  - iocs.empty
+  - iocs.form.ctx_opt
+  - iocs.mal_count
+  - iocs.unk_count
+  - no_profile
+  - optional
+  - orphaned
+  - prof_avatar
+  - prof_change_pw
+  - prof_image_saved
+  - re_fullscreen
+  - re_placeholder
+  - re_reduce
+  - remove_member
+  - repo_enabled_lbl
+  - sans_label
+  - save_changes
+  - select_all
+  - signout
+  - switch_theme_dark
+  - switch_theme_light
+  - tables_detected
+  - total
+  - var.AccountName
+  - var.DeviceName
+  - var.Domain
+  - var.FileHash
+  - var.FileName
+  - var.IPAddress
+  - var.Port
+  - var.ProcessName
+  - var.RegistryKey
+  - var.RemoteIP
+  - var.ServiceName
+  - var.Threshold
+  - var.TimeRange
+  - var.URL
+  - var.UserEmail
+  - var.Username
+  - vars.group.file
+  - vars.group.filters
+  - vars.group.host
+  - vars.group.identity
+  - vars.group.network
+  - vars.group.temporal
+  - watch_view_compact
+  - watch_view_list
+  - watch_view_mosaic
+  - wdet_no_matches
+  - wsrc_testing
+  - wsrc_url
+  - wv_days_14
+  - wv_days_30
+  - wv_days_7
+  - wv_filter_unread
+  - wv_matched_only
+
+## T() CALLS BY FILE
+  app.js: 253 unique keys
+  admin.js: 75 unique keys
+  admin-templates.js: 0 unique keys
+  auth.js: 0 unique keys
+  investigations.js: 145 unique keys
+  data.js: 7 unique keys
+
+## FULL TRANSLATION TABLE
+  STATUS         | KEY                                                | FR                                       | EN
+  ------------------------------------------------------------------------------------------------------------------------------------------------------
+  MISSING_BOTH   | inv.status.                                        |                                          | 
+  MISSING_BOTH   | var.                                               |                                          | 
+  MISSING_BOTH   | vars.group.                                        |                                          | 
+  ORPHAN         | add_member                                         | Ajouter un membre                        | Add member
+  ORPHAN         | admin_apply                                        | Appliquer                                | Apply
+  ORPHAN         | admin_backup_btn                                   | Télécharger                              | Download
+  ORPHAN         | admin_backup_desc                                  | Télécharger une copie de kqlvault.db     | Download a copy of kqlvault.db
+  ORPHAN         | admin_bulk_delete                                  | Supprimer la sélection                   | Delete selected
+  ORPHAN         | admin_bulk_severity                                | Changer la sévérité…                     | Change severity…
+  ORPHAN         | admin_clear                                        | Réinitialiser                            | Clear
+  ORPHAN         | admin_col_action                                   | Action                                   | Action
+  ORPHAN         | admin_col_date                                     | Date                                     | Date
+  ORPHAN         | admin_col_findings                                 | Findings                                 | Findings
+  ORPHAN         | admin_col_iocs                                     | IOCs                                     | IOCs
+  ORPHAN         | admin_col_ip                                       | IP                                       | IP
+  ORPHAN         | admin_col_severity                                 | Sévérité                                 | Severity
+  ORPHAN         | admin_col_title                                    | Titre                                    | Title
+  ORPHAN         | admin_col_user                                     | Utilisateur                              | User
+  ORPHAN         | admin_db_active                                    | Actif                                    | Active
+  ORPHAN         | admin_db_not_set                                   | NON DÉFINIE                              | NOT SET
+  ORPHAN         | admin_delete_team                                  | Supprimer l’équipe                       | Delete team
+  ORPHAN         | admin_empty_repos                                  | Aucune source GitHub configurée.         | No repo sources configured.
+  ORPHAN         | admin_empty_watch                                  | Aucune source de veille configurée.      | No watch sources configured.
+  ORPHAN         | admin_fingerprint                                  | Environnements                           | Environments
+  ORPHAN         | admin_from_date                                    | Du                                       | From
+  ORPHAN         | admin_no_team                                      | — Aucune équipe                          | — No team
+  ORPHAN         | admin_ph_env_name                                  | Mon environnement SOC                    | My SOC Environment
+  ORPHAN         | admin_ph_gh_owner                                  | Azure                                    | Azure
+  ORPHAN         | admin_ph_gh_repo                                   | Azure-Sentinel                           | Azure-Sentinel
+  ORPHAN         | admin_ph_path_filter                               | Hunting Queries/                         | Hunting Queries/
+  ORPHAN         | admin_ph_repo_name                                 | Mon repo communautaire                   | My Community Repo
+  ORPHAN         | admin_ph_team_name                                 | SOC Blue Team…                           | SOC Blue Team…
+  ORPHAN         | admin_search_queries                               | Rechercher des requêtes…                 | Search queries…
+  ORPHAN         | admin_select_user                                  | Sélectionner un utilisateur…             | Select user to add…
+  ORPHAN         | admin_team_name                                    | Nom de l’équipe                          | Team name
+  ORPHAN         | admin_to_date                                      | Au                                       | To
+  ORPHAN         | admin_user_display                                 | Nom affiché                              | Display name
+  ORPHAN         | admin_user_login                                   | Identifiant                              | Login
+  ORPHAN         | admin_user_role                                    | Rôle                                     | Role
+  ORPHAN         | admin_user_team                                    | Équipe                                   | Team
+  ORPHAN         | admin_watch_interval                               | Récupérer les flux toutes les            | Fetch feeds every
+  ORPHAN         | admin_watch_minutes                                | minutes                                  | minutes
+  ORPHAN         | all_teams                                          | Toutes les équipes                       | All teams
+  ORPHAN         | are_you_sure                                       | Confirmer ? Cette action est irréversi   | Are you sure? This cannot be undone.
+  ORPHAN         | bulk_actions                                       | Actions groupées                         | Bulk actions
+  ORPHAN         | bulk_del_btn                                       | Supprimer ({n})                          | Delete ({n})
+  ORPHAN         | bulk_del_ok                                        | {n} requête(s) supprimée(s) ✓            | {n} item(s) deleted ✓
+  ORPHAN         | bulk_move_ok                                       | {n} requête(s) déplacée(s) ✓             | {n} item(s) moved ✓
+  ORPHAN         | bulk_selected                                      | {n} sélectionnée(s)                      | {n} selected
+  ORPHAN         | bulk_sev_ok                                        | {n} requête(s) mise(s) à jour ✓          | {n} item(s) updated ✓
+  ORPHAN         | check_compatibility                                | Compatibilité                            | Compatibility
+  ORPHAN         | collections                                        | Collections                              | Collections
+  ORPHAN         | cr_sans                                            | Cycle IR SANS                            | SANS IR Cycle
+  ORPHAN         | cyber_alerts                                       | Alertes cyber                            | Cyber alerts
+  ORPHAN         | det_compatible_assumed                             | Aucune table détectée — supposée compa   | No known tables detected — assumed com
+  ORPHAN         | det_no_detail                                      | Aucun détail disponible.                 | No detail available.
+  ORPHAN         | det_resolved_lbl                                   | {lang} RÉSOLU                            | {lang} RESOLVED
+  ORPHAN         | dismiss                                            | Masquer                                  | Dismiss
+  ORPHAN         | env_active                                         | ACTIF                                    | ACTIVE
+  ORPHAN         | env_cancel                                         | Annuler                                  | Cancel
+  ORPHAN         | env_name                                           | Nom                                      | Name
+  ORPHAN         | env_platform                                       | Plateforme                               | Platform
+  ORPHAN         | findings.modal.btn_add                             | Ajouter à la timeline                    | Add to timeline
+  ORPHAN         | findings.modal.btn_save                            | Enregistrer                              | Save
+  ORPHAN         | findings.modal.title_edit                          | ✏ Modifier l'événement                   | ✏ Edit event
+  ORPHAN         | findings.modal.title_new                           | + Nouvel événement                       | + New event
+  ORPHAN         | inv.error.save                                     | Erreur lors de la sauvegarde             | Error saving
+  ORPHAN         | inv.field.conclusion                               | Conclusion                               | Conclusion
+  ORPHAN         | inv.field.created                                  | Créé                                     | Created
+  ORPHAN         | inv.field.no_conclusion                            | Aucune conclusion fournie.               | No conclusion provided.
+  ORPHAN         | inv.field.summary                                  | Résumé exécutif                          | Executive Summary
+  ORPHAN         | inv.field.updated                                  | Mis à jour                               | Updated
+  ORPHAN         | inv.filter.active                                  | En cours                                 | In Progress
+  ORPHAN         | inv.filter.all                                     | Toutes                                   | All
+  ORPHAN         | inv.filter.closed                                  | Clôturées                                | Closed
+  ORPHAN         | inv.filter.open                                    | Ouvertes                                 | Open
+  ORPHAN         | inv.tab.findings                                   | 🔎 Findings                              | 🔎 Findings
+  ORPHAN         | inv.tab.iocs                                       | 🎯 IoCs                                  | 🎯 IoCs
+  ORPHAN         | inv.tab.overview                                   | 📋 Aperçu                                | 📋 Overview
+  ORPHAN         | inv.tab.report                                     | 📄 Rapport                               | 📄 Report
+  ORPHAN         | iocs.empty                                         | Aucun IoC enregistré                     | No IoCs recorded
+  ORPHAN         | iocs.form.ctx_opt                                  | (optionnel)                              | (optional)
+  ORPHAN         | iocs.mal_count                                     | {n} malicious                            | {n} malicious
+  ORPHAN         | iocs.unk_count                                     | {n} unknown                              | {n} unknown
+  ORPHAN         | no_profile                                         | Aucun profil configuré                   | No profile configured
+  ORPHAN         | optional                                           | optionnel                                | optional
+  ORPHAN         | orphaned                                           | Sans dossier                             | No folder
+  ORPHAN         | prof_avatar                                        | Photo de profil                          | Profile picture
+  ORPHAN         | prof_change_pw                                     | Changer ma passphrase                    | Change my passphrase
+  ORPHAN         | prof_image_saved                                   | Image enregistrée                        | Image saved
+  ORPHAN         | re_fullscreen                                      | Plein écran                              | Fullscreen
+  ORPHAN         | re_placeholder                                     | Rédigez ici… (Markdown supporté)         | Write here… (Markdown supported)
+  ORPHAN         | re_reduce                                          | Réduire                                  | Minimize
+  ORPHAN         | remove_member                                      | Retirer                                  | Remove
+  ORPHAN         | repo_enabled_lbl                                   | Activé                                   | Enabled
+  ORPHAN         | sans_label                                         | Cycle IR SANS                            | SANS IR Cycle
+  ORPHAN         | save_changes                                       | Enregistrer les modifications            | Save changes
+  ORPHAN         | select_all                                         | Tout sélectionner                        | Select all
+  ORPHAN         | signout                                            | Déconnexion                              | Sign out
+  ORPHAN         | switch_theme_dark                                  | Mode sombre                              | Dark mode
+  ORPHAN         | switch_theme_light                                 | Mode clair                               | Light mode
+  ORPHAN         | tables_detected                                    | Tables détectées                         | Tables detected
+  ORPHAN         | total                                              | total                                    | total
+  ORPHAN         | var.AccountName                                    | Compte Windows                           | Windows account
+  ORPHAN         | var.DeviceName                                     | Nom du poste                             | Device name
+  ORPHAN         | var.Domain                                         | Domaine AD                               | AD domain
+  ORPHAN         | var.FileHash                                       | Hash SHA256                              | SHA256 hash
+  ORPHAN         | var.FileName                                       | Nom de fichier                           | File name
+  ORPHAN         | var.IPAddress                                      | Adresse IP source                        | Source IP address
+  ORPHAN         | var.Port                                           | Port                                     | Port
+  ORPHAN         | var.ProcessName                                    | Nom du processus                         | Process name
+  ORPHAN         | var.RegistryKey                                    | Clé de registre                          | Registry key
+  ORPHAN         | var.RemoteIP                                       | IP distante                              | Remote IP
+  ORPHAN         | var.ServiceName                                    | Service Windows                          | Windows service
+  ORPHAN         | var.Threshold                                      | Seuil                                    | Threshold
+  ORPHAN         | var.TimeRange                                      | Plage de temps                           | Time range
+  ORPHAN         | var.URL                                            | URL                                      | URL
+  ORPHAN         | var.UserEmail                                      | Email utilisateur                        | User email
+  ORPHAN         | var.Username                                       | Nom SAM                                  | SAM name
+  ORPHAN         | vars.group.file                                    | Fichier & Hash                           | File & Hash
+  ORPHAN         | vars.group.filters                                 | Filtres                                  | Filters
+  ORPHAN         | vars.group.host                                    | Hôte & Processus                         | Host & Process
+  ORPHAN         | vars.group.identity                                | Identité                                 | Identity
+  ORPHAN         | vars.group.network                                 | Réseau                                   | Network
+  ORPHAN         | vars.group.temporal                                | Temporel                                 | Temporal
+  ORPHAN         | watch_view_compact                                 | Compact                                  | Compact
+  ORPHAN         | watch_view_list                                    | Liste                                    | List
+  ORPHAN         | watch_view_mosaic                                  | Mosaïque                                 | Mosaic
+  ORPHAN         | wdet_no_matches                                    | Aucune requête correspondante pour cet   | No matching queries found for this art
+  ORPHAN         | wsrc_testing                                       | Test en cours…                           | Testing…
+  ORPHAN         | wsrc_url                                           | URL                                      | URL
+  ORPHAN         | wv_days_14                                         | 14j                                      | 14d
+  ORPHAN         | wv_days_30                                         | 30j                                      | 30d
+  ORPHAN         | wv_days_7                                          | 7j                                       | 7d
+  ORPHAN         | wv_filter_unread                                   | Non lus                                  | Unread only
+  ORPHAN         | wv_matched_only                                    | Avec correspondances                     | Matched only
+  OK             | active_sessions                                    | Sessions actives                         | Active sessions
+  OK             | add_and_sync                                       | Ajouter et synchroniser                  | Add & Sync now
+  OK             | add_repo                                           | + Ajouter un dépôt                       | + Add repository
+  OK             | admin                                              | Admin                                    | Admin
+  OK             | admin_audit                                        | Journal d’audit                          | Audit Log
+  OK             | admin_col_actions                                  | Actions                                  | Actions
+  OK             | admin_col_created                                  | Créé                                     | Created
+  OK             | admin_col_display                                  | Nom affiché                              | Display name
+  OK             | admin_col_login                                    | Identifiant                              | Login
+  OK             | admin_col_role                                     | Rôle                                     | Role
+  OK             | admin_col_sessions                                 | Sessions                                 | Sessions
+  OK             | admin_col_status                                   | Statut                                   | Status
+  OK             | admin_col_team                                     | Équipe                                   | Team
+  OK             | admin_dashboard                                    | Tableau de bord                          | Dashboard
+  OK             | admin_db_vacuumed                                  | Base optimisée ✓                         | Database vacuumed ✓
+  OK             | admin_done                                         | Terminé                                  | Done
+  OK             | admin_empty_teams                                  | Aucune équipe. Créez-en une pour comme   | No teams. Create one to get started.
+  OK             | admin_folder_deleted                               | Dossier supprimé                         | Folder deleted
+  OK             | admin_folder_unlink_warn                           | {n} requête(s) seront conservée(s) san   | {n} quer(ies) will be kept without a f
+  OK             | admin_folders                                      | Dossiers                                 | Folders
+  OK             | admin_investigations                               | Investigations                           | Investigations
+  OK             | admin_member_added                                 | Membre ajouté                            | Member added
+  OK             | admin_member_removed                               | Membre retiré                            | Member removed
+  OK             | admin_panel                                        | Administration                           | Admin Panel
+  OK             | admin_purging                                      | Suppression…                             | Purging…
+  OK             | admin_queries                                      | Requêtes                                 | Queries
+  OK             | admin_queries_updated                              | {n} requête(s) mise(s) à jour ✓          | {n} quer(ies) updated ✓
+  OK             | admin_query_deleted                                | Requête supprimée                        | Query deleted
+  OK             | admin_repos                                        | Sources GitHub                           | Repo Sources
+  OK             | admin_running                                      | En cours…                                | Running…
+  OK             | admin_search_users                                 | Rechercher des utilisateurs…             | Search users…
+  OK             | admin_sel_sev_first                                | Choisir une sévérité.                    | Select a severity first.
+  OK             | admin_session_killed                               | Session terminée                         | Session killed
+  OK             | admin_settings                                     | Paramètres                               | Settings
+  OK             | admin_status_active                                | Actif                                    | Active
+  OK             | admin_status_change_pw                             | Changer mdp                              | Change pw
+  OK             | admin_status_locked                                | Verrouillé ({remaining}m)                | Locked ({remaining}m)
+  OK             | admin_tab_wip                                      | Onglet non encore implémenté.            | Tab not yet implemented.
+  OK             | admin_team_created                                 | Équipe créée                             | Team created
+  OK             | admin_team_deleted                                 | Équipe supprimée                         | Team deleted
+  OK             | admin_teams                                        | Équipes                                  | Teams
+  OK             | admin_threats                                      | Menaces                                  | Threat Intel
+  OK             | admin_unlocked                                     | Débloqué                                 | Unlocked
+  OK             | admin_user_created                                 | Utilisateur « {login} » créé             | User "{login}" created
+  OK             | admin_user_deleted                                 | Utilisateur supprimé                     | User deleted
+  OK             | admin_users                                        | Utilisateurs                             | Users
+  OK             | admin_view_detail                                  | Voir le détail                           | View detail
+  OK             | admin_watch                                        | Veille Cyber                             | Cyber Watch
+  OK             | ago                                                | il y a                                   | ago
+  OK             | all_queries                                        | Toutes les requêtes                      | All queries
+  OK             | all_sources                                        | Toutes les sources                       | All sources
+  OK             | back_to_vault                                      | Retour au Vault                          | Back to Vault
+  OK             | bulk_del_confirm                                   | Supprimer {n} requête(s) ? Action irré   | Delete {n} item(s)? This cannot be und
+  OK             | cancel                                             | Annuler                                  | Cancel
+  OK             | clear_filters                                      | ✕ Effacer les filtres                    | ✕ Clear filters
+  OK             | close                                              | Fermer                                   | Close
+  OK             | close_nosave                                       | Fermer sans sauvegarder                  | Close without saving
+  OK             | cmt_empty                                          | Le commentaire ne peut pas être vide.    | Comment cannot be empty.
+  OK             | cmt_updated                                        | Commentaire mis à jour                   | Comment updated
+  OK             | compatible                                         | Compatible                               | Compatible
+  OK             | configure_env                                      | Configurer l’environnement               | Configure environment
+  OK             | confirm_delete                                     | Confirmer la suppression ?               | Are you sure?
+  OK             | copied                                             | Copié !                                  | Copied!
+  OK             | cpw_confirm_lbl                                    | Confirmer                                | Confirm
+  OK             | cpw_current                                        | Passphrase actuelle                      | Current passphrase
+  OK             | cpw_forced_desc                                    | Vous devez définir une nouvelle passph   | You must set a new passphrase before c
+  OK             | cpw_forced_title                                   | Changement de passphrase requis          | Password change required
+  OK             | cpw_min8                                           | minimum 8 caractères                     | minimum 8 characters
+  OK             | cpw_new                                            | Nouvelle passphrase                      | New passphrase
+  OK             | cpw_save                                           | Enregistrer                              | Save
+  OK             | cpw_title                                          | Changer ma passphrase                    | Change my passphrase
+  OK             | cr_description                                     | Description                              | Description
+  OK             | cr_detected                                        | Détectées :                              | Detected: 
+  OK             | cr_edit_title                                      | Modifier la requête                      | Edit query
+  OK             | cr_env                                             | Environnement                            | Environment
+  OK             | cr_folder                                          | Dossier                                  | Folder
+  OK             | cr_language                                        | Langage                                  | Language
+  OK             | cr_mitre                                           | MITRE                                    | MITRE
+  OK             | cr_new_title                                       | Nouvelle requête                         | New query
+  OK             | cr_none_folder                                     | Aucun                                    | None
+  OK             | cr_playbook                                        | Playbook                                 | Playbook
+  OK             | cr_save_changes                                    | Enregistrer les modifications            | Save changes
+  OK             | cr_save_query                                      | Enregistrer la requête                   | Save query
+  OK             | cr_severity                                        | Sévérité                                 | Severity
+  OK             | cr_tags                                            | Tags                                     | Tags
+  OK             | cr_tags_ph                                         | Ajouter+Entrée                           | Add+Enter
+  OK             | cr_title_lbl                                       | Titre                                    | Title
+  OK             | create                                             | + Créer                                  | + Create
+  OK             | create_account                                     | Créer un compte                          | Create account
+  OK             | create_team                                        | Créer une équipe                         | Create team
+  OK             | create_user                                        | Créer un utilisateur                     | Create user
+  OK             | critical_alerts                                    | critiques                                | critical
+  OK             | custom_tables                                      | Tables personnalisées                    | Custom tables
+  OK             | days_unit                                          | jours                                    | days
+  OK             | defender_xdr                                       | Defender XDR                             | Defender XDR
+  OK             | del_cmt_confirm                                    | Supprimer ce commentaire ?               | Delete this comment?
+  OK             | del_env_confirm                                    | Supprimer ce profil ?                    | Delete this profile?
+  OK             | del_folder_confirm                                 | Supprimer le dossier "{name}" ?          | Delete folder "{name}"?
+  OK             | del_folder_keep_queries                            | Les {n} queries seront conservées sans   | {n} queries will be kept without a fol
+  OK             | del_query_confirm                                  | Supprimer "{title}" ? Cette action est   | Delete "{title}"? This action is irrev
+  OK             | del_source_confirm                                 | Supprimer la source "{name}" ?           | Delete source "{name}"?
+  OK             | delete                                             | Supprimer                                | Delete
+  OK             | delete_user                                        | Supprimer l’utilisateur                  | Delete user
+  OK             | demo_btn                                           | Accès démo (lecture seule)               | Demo access (read-only)
+  OK             | det_cmt_add                                        | Ajouter                                  | Add
+  OK             | det_cmt_placeholder                                | Note, contexte, lien de campagne, arti   | Note, context, campaign link, MITRE AT
+  OK             | det_cmt_url                                        | URL de référence (optionnel)             | Reference URL (optional)
+  OK             | det_comments_title                                 | RÉFÉRENCES & COMMENTAIRES                | REFERENCES & COMMENTS
+  OK             | det_copy_lang                                      | Copier {lang}                            | Copy {lang}
+  OK             | det_copy_resolved                                  | Copier {lang} résolu                     | Copy resolved {lang}
+  OK             | det_delete_btn                                     | Supprimer                                | Delete
+  OK             | det_edit_btn                                       | ✎ Modifier                               | ✎ Edit
+  OK             | det_export_btn                                     | Exporter                                 | Export
+  OK             | det_last_synced                                    | Dernière sync                            | Last synced
+  OK             | det_loading_comments                               | Chargement...                            | Loading...
+  OK             | det_move_to                                        | Déplacer vers…                           | Move to folder…
+  OK             | det_no_comments                                    | Aucune référence pour l’instant.         | No references yet.
+  OK             | det_no_folder                                      | Aucun dossier                            | No folder
+  OK             | det_query_lbl                                      | {lang} QUERY                             | {lang} QUERY
+  OK             | det_resolved_ready                                 | PRÊT                                     | READY
+  OK             | det_var_not_filled                                 | {n} variable(s) non remplie(s)           | {n} variable(s) not filled
+  OK             | det_vars_title                                     | Variables de la query                    | Query variables
+  OK             | disabled_lbl                                       | Désactivé                                | Disabled
+  OK             | enabled_lbl                                        | Activé                                   | Enabled
+  OK             | env_activate                                       | Activer                                  | Activate
+  OK             | env_check                                          | Vérification d’environnement             | Environment check
+  OK             | env_check_result                                   | Environnement configuré                  | Environment configured
+  OK             | env_custom_desc                                    | Tables Log Analytics personnalisées, s   | Custom Log Analytics tables, comma-sep
+  OK             | env_mde_note                                       | MDE P1 — DeviceProcessEvents, DeviceNe   | MDE P1 — DeviceProcessEvents, DeviceNe
+  OK             | env_new_profile                                    | + Nouveau profil                         | + New profile
+  OK             | env_profile                                        | Environnement                            | Environment
+  OK             | env_sent_note                                      | SecurityAlert, SecurityIncident, Threa   | SecurityAlert, SecurityIncident, Threa
+  OK             | error                                              | Erreur                                   | Error
+  OK             | error_enter_url                                    | Entrez d’abord une URL                   | Enter a URL first
+  OK             | error_http                                         | {status} — {text}                        | {status} — {text}
+  OK             | export                                             | Exporter                                 | Export
+  OK             | export_backup                                      | Exporter une sauvegarde                  | Export backup
+  OK             | export_csv                                         | Exporter en CSV                          | Export CSV
+  OK             | extracted_keywords                                 | Mots-clés extraits                       | Extracted keywords
+  OK             | feed_type                                          | Type de flux                             | Feed type
+  OK             | file_format                                        | Format de fichier                        | File format
+  OK             | findings.add.code                                  | + Ajouter un bloc                        | + Add block
+  OK             | findings.add.screenshot                            | + Ajouter une image                      | + Add image
+  OK             | findings.btn_add                                   | + Ajouter un événement                   | + Add event
+  OK             | findings.copy.caption                              | Légende...                               | Caption...
+  OK             | findings.copy.code                                 | 📋 Copier                                | 📋 Copy
+  OK             | findings.count                                     | {n} événement(s)                         | {n} event(s)
+  OK             | findings.date.unknown                              | Date non définie                         | Unknown date
+  OK             | findings.drag                                      | glisser pour réorganiser                 | drag to reorder
+  OK             | findings.empty                                     | Aucun événement                          | No events
+  OK             | findings.empty_hint                                | ajoutez le premier                       | add the first one
+  OK             | findings.empty_locked                              | aucun finding enregistré                 | no findings recorded
+  OK             | findings.error.image_size                          | Image trop grande — max 3 MB             | Image too large — max 3 MB
+  OK             | findings.error.save                                | Erreur lors de la sauvegarde             | Error saving
+  OK             | findings.error.title_required                      | Le titre est requis                      | Title is required
+  OK             | findings.lock_badge                                | 🔒 Rapport verrouillé                    | 🔒 Report locked
+  OK             | findings.modal.btn_cancel                          | Annuler                                  | Cancel
+  OK             | findings.modal.date_hint                           | Laissez vide si la date n'est pas conn   | Leave empty if date is unknown
+  OK             | findings.modal.label_code                          | Blocs de code                            | Code blocks
+  OK             | findings.modal.label_date                          | Date & heure de l'événement              | Event date & time
+  OK             | findings.modal.label_desc                          | Description                              | Description
+  OK             | findings.modal.label_scr                           | Screenshots                              | Screenshots
+  OK             | findings.modal.label_sev                           | Sévérité                                 | Severity
+  OK             | findings.modal.label_title                         | Titre *                                  | Title *
+  OK             | findings.modal.label_type                          | Type d'événement                         | Event type
+  OK             | findings.modal.placeholder_code                    | Collez votre code ici...                 | Paste your code here...
+  OK             | findings.modal.placeholder_desc                    | Détails de l'événement, contexte, obse   | Event details, context, observations..
+  OK             | findings.modal.placeholder_title                   | Ex: Connexion RDP depuis IP suspecte     | Ex: RDP connection from suspicious IP
+  OK             | findings.no_title                                  | Sans titre                               | Untitled
+  OK             | findings.title                                     | Timeline des événements                  | Event Timeline
+  OK             | findings.toast.added                               | Événement ajouté ✓                       | Event added ✓
+  OK             | findings.toast.deleted                             | Événement supprimé ✓                     | Event deleted ✓
+  OK             | findings.toast.updated                             | Événement mis à jour ✓                   | Event updated ✓
+  OK             | findings.type.custom                               | 📌 Personnalisé                          | 📌 Custom
+  OK             | findings.type.exfil                                | 📤 Exfiltration                          | 📤 Exfiltration
+  OK             | findings.type.finding                              | 🔍 Finding                               | 🔍 Finding
+  OK             | findings.type.initial                              | 🚪 Accès initial                         | 🚪 Initial Access
+  OK             | findings.type.ioc                                  | ⚠️ IOC détecté                           | ⚠️ IOC Detected
+  OK             | findings.type.lateral                              | ↔️ Mouvement latéral                     | ↔️ Lateral Movement
+  OK             | fld_create                                         | Créer                                    | Create
+  OK             | fld_icon                                           | Icône (2 lettres)                        | Icon (2 letters)
+  OK             | fld_name                                           | Nom                                      | Name
+  OK             | fld_new_title                                      | Nouveau dossier                          | New folder
+  OK             | folder_deleted                                     | Dossier supprimé                         | Folder deleted
+  OK             | folder_renamed                                     | Dossier renommé ✓                        | Folder renamed ✓
+  OK             | force_change_pw                                    | Forcer le changement                     | Force password change
+  OK             | github_owner                                       | Propriétaire GitHub                      | GitHub owner
+  OK             | github_repo                                        | Dépôt GitHub                             | GitHub repo
+  OK             | hours_unit                                         | heures                                   | hours
+  OK             | img_format_err                                     | Format non supporté (JPEG, PNG, WebP,    | Unsupported format (JPEG, PNG, WebP, G
+  OK             | img_size_err                                       | Image trop grande (max 150 Ko)           | Image too large (max 150 KB)
+  OK             | imp_upload_desc                                    | Chargez un fichier JSON exporté depuis   | Upload a JSON file exported from KQL V
+  OK             | import                                             | Importer                                 | Import
+  OK             | import_ok                                          | {n} requête(s) importée(s) ✓             | {n} quer(ies) imported ✓
+  OK             | imported_from                                      | Importé depuis                           | Imported from
+  OK             | incompatible                                       | Incompatible                             | Incompatible
+  OK             | inv.delete.confirm                                 | Supprimer cette investigation et toute   | Delete this investigation and all its 
+  OK             | inv.deleted                                        | Investigation supprimée                  | Investigation deleted
+  OK             | inv.empty.filter                                   | Aucune investigation {status}            | No {status} investigations
+  OK             | inv.empty.title                                    | Aucune investigation                     | No investigations
+  OK             | inv.error.load                                     | Erreur de chargement                     | Loading error
+  OK             | inv.error.order                                    | Erreur sauvegarde ordre                  | Error saving order
+  OK             | inv.field.analyst                                  | Analyste                                 | Analyst
+  OK             | inv.field.conc_ph                                  | Synthèse des findings, recommandations   | Summary of findings, recommendations, 
+  OK             | inv.field.desc_ph                                  | Résumé exécutif — contexte, menace ide   | Executive summary — context, identifie
+  OK             | inv.field.no_desc                                  | Aucune description fournie.              | No description provided.
+  OK             | inv.field.severity                                 | Sévérité                                 | Severity
+  OK             | inv.field.status                                   | Statut                                   | Status
+  OK             | inv.field.title                                    | Titre                                    | Title
+  OK             | inv.locked.banner                                  | 🔒 Rapport verrouillé                    | 🔒 Report locked
+  OK             | inv.locked.no_edit                                 | Aucune modification n'est possible.      | No changes are possible.
+  OK             | inv.locked.unlock                                  | 🔓 Déverrouiller (Admin)                 | 🔓 Unlock (Admin)
+  OK             | inv.locked.until                                   |  — clôturé le {date}                     |  — closed on {date}
+  OK             | inv.modal.client                                   | CLIENT / ENTREPRISE                      | CLIENT / COMPANY
+  OK             | inv.modal.create_btn                               | Créer l'investigation →                  | Create investigation →
+  OK             | inv.modal.creating                                 | Création…                                | Creating…
+  OK             | inv.modal.mission_type                             | TYPE DE MISSION                          | MISSION TYPE
+  OK             | inv.modal.no_template                              | — Sans template (classique) —            | — No template (classic) —
+  OK             | inv.modal.severity                                 | SÉVÉRITÉ GLOBALE                         | OVERALL SEVERITY
+  OK             | inv.modal.template                                 | TEMPLATE                                 | TEMPLATE
+  OK             | inv.modal.title                                    | 🔍 Nouvelle investigation                | 🔍 New investigation
+  OK             | inv.modal.title_field                              | TITRE DE L'INVESTIGATION *               | INVESTIGATION TITLE *
+  OK             | inv.modal.title_required                           | Le titre est requis.                     | Title is required.
+  OK             | inv.new                                            | + Nouvelle investigation                 | + New investigation
+  OK             | inv.save                                           | Enregistrer                              | Save
+  OK             | inv.select                                         | Sélectionnez une investigation           | Select an investigation
+  OK             | inv.select_sub                                     | Sélectionnez une investigation dans la   | Select an investigation from the list 
+  OK             | inv.status.closed                                  | Clôturé                                  | Closed
+  OK             | inv.status.inprogress                              | En cours                                 | In Progress
+  OK             | inv.status.open                                    | Ouvert                                   | Open
+  OK             | inv.title                                          | Investigations                           | Investigations
+  OK             | inv.unlock.confirm                                 | Déverrouiller ce rapport ?               | Unlock this report?
+  OK             | inv.unlocked                                       | Rapport déverrouillé ✓                   | Report unlocked ✓
+  OK             | investigations                                     | Investigations                           | Investigations
+  OK             | iocs.btn_add                                       | ➕ Ajouter un IoC                         | ➕ Add IoC
+  OK             | iocs.col.context                                   | Contexte                                 | Context
+  OK             | iocs.col.indicator                                 | Indicateur                               | Indicator
+  OK             | iocs.col.sev                                       | Sév.                                     | Sev.
+  OK             | iocs.col.status                                    | Statut                                   | Status
+  OK             | iocs.col.type                                      | Type                                     | Type
+  OK             | iocs.copy                                          | 📋 Copy IoC list                         | 📋 Copy IoC list
+  OK             | iocs.edit.btn_cancel                               | Annuler                                  | Cancel
+  OK             | iocs.edit.btn_save                                 | Enregistrer                              | Save
+  OK             | iocs.edit.label_desc                               | Description / contexte                   | Description / context
+  OK             | iocs.edit.label_sev                                | Sévérité                                 | Severity
+  OK             | iocs.edit.label_type                               | Type                                     | Type
+  OK             | iocs.edit.label_val                                | Valeur *                                 | Value *
+  OK             | iocs.edit.placeholder_desc                         | Ex: IP C2 observée dans les logs EDR     | Ex: C2 IP observed in EDR logs
+  OK             | iocs.edit.title                                    | ✏ Modifier l'IoC                         | ✏ Edit IoC
+  OK             | iocs.empty_yet                                     | Aucun IoC enregistré pour l'instant      | No IoCs recorded yet
+  OK             | iocs.error.save                                    | Erreur lors de la sauvegarde             | Error saving
+  OK             | iocs.error.val_required                            | La valeur est requise                    | Value is required
+  OK             | iocs.form.btn_add                                  | Ajouter                                  | Add
+  OK             | iocs.form.ctx                                      | Contexte                                 | Context
+  OK             | iocs.form.placeholder_ctx                          | Serveur C2, domaine de phishing, dropp   | C2 server, phishing domain, sample dro
+  OK             | iocs.form.placeholder_val                          | 1.2.3.4  /  evil.com  /  SHA256  /  CV   | 1.2.3.4  /  evil.com  /  SHA256  /  CV
+  OK             | iocs.form.type                                     | Type                                     | Type
+  OK             | iocs.form.value                                    | Valeur                                   | Value
+  OK             | iocs.status.mal                                    | 🔴 Malicious                             | 🔴 Malicious
+  OK             | iocs.status.unk                                    | ⚪ Unknown                                | ⚪ Unknown
+  OK             | iocs.title                                         | Indicateurs de Compromission             | Indicators of Compromise
+  OK             | iocs.toast.added                                   | IoC ajouté ✓                             | IoC added ✓
+  OK             | iocs.toast.deleted                                 | IoC supprimé ✓                           | IoC deleted ✓
+  OK             | iocs.toast.updated                                 | IoC mis à jour ✓                         | IoC updated ✓
+  OK             | just_now                                           | À l’instant                              | Just now
+  OK             | kill_session                                       | Terminer la session                      | Kill session
+  OK             | kill_sessions                                      | Terminer les sessions                    | Kill all sessions
+  OK             | last_fetched                                       | Dernier rafraîchissement                 | Last fetched
+  OK             | lbl_folder                                         | Dossier                                  | Folder
+  OK             | leave_team_confirm                                 | Quitter votre équipe ?                   | Leave your team?
+  OK             | left_team                                          | Équipe quittée                           | Left team
+  OK             | loading                                            | Chargement…                              | Loading…
+  OK             | locally_modified                                   | Modifié localement                       | Locally modified
+  OK             | login_invalid_chars                                | Identifiant : lettres, chiffres, _ . -   | Login: letters, numbers, _ . - only.
+  OK             | login_label                                        | Identifiant                              | Login
+  OK             | login_min2                                         | Identifiant : minimum 2 caractères.      | Login: minimum 2 characters.
+  OK             | login_pw_required                                  | Identifiant et passphrase requis.        | Login and passphrase are required.
+  OK             | login_subtitle                                     | Gestionnaire de requêtes KQL pour équi   | KQL query manager for SOC teams
+  OK             | logout                                             | Déconnexion                              | Sign out
+  OK             | maintenance                                        | Maintenance                              | Maintenance
+  OK             | mark_read                                          | Marquer comme lu                         | Mark as read
+  OK             | matching_queries                                   | Queries correspondantes                  | Matching queries
+  OK             | minutes_unit                                       | minutes                                  | minutes
+  OK             | missing_connector                                  | Connecteur manquant                      | Missing connector
+  OK             | missing_license                                    | Licence manquante                        | Missing license
+  OK             | mitre_label                                        | MITRE ATT&CK                             | MITRE ATT&CK
+  OK             | name_lbl                                           | Nom                                      | Name
+  OK             | name_required                                      | Nom requis                               | Name required
+  OK             | name_url_required                                  | Nom et URL requis.                       | Name and URL required.
+  OK             | never                                              | Jamais                                   | Never
+  OK             | never_synced                                       | Jamais synchronisé                       | Never synced
+  OK             | new_folder                                         | + Nouveau dossier                        | + New folder
+  OK             | new_queries                                        | nouvelles                                | new
+  OK             | new_query                                          | Nouvelle requête                         | New query
+  OK             | no_account                                         | Pas encore de compte ?                   | No account yet?
+  OK             | no_articles                                        | Aucun article trouvé                     | No articles found
+  OK             | no_data                                            | Aucune donnée                            | No data
+  OK             | no_env_profile                                     | Aucun environnement configuré            | No environment configured
+  OK             | no_queries                                         | Aucune requête trouvée                   | No queries found
+  OK             | partial                                            | Partiel                                  | Partial
+  OK             | partial_compat                                     | Partiellement compatible                 | Partially compatible
+  OK             | passphrase                                         | Phrase secrète                           | Passphrase
+  OK             | password_generated                                 | Mot de passe généré (copier maintenant   | Generated password (copy now)
+  OK             | path_filter                                        | Filtre de chemin                         | Path filter
+  OK             | personal_folders                                   | Personnel                                | Personal
+  OK             | platform_label                                     | Plateforme                               | Platform
+  OK             | platforms_label                                    | Plateformes                              | Platforms
+  OK             | prof_add_passkey                                   | Ajouter                                  | Add
+  OK             | prof_choose                                        | Choisir                                  | Choose
+  OK             | prof_delete_photo                                  | Supprimer photo                          | Delete photo
+  OK             | prof_env_manage                                    | Gérer →                                  | Manage →
+  OK             | prof_env_none                                      | Aucun profil actif                       | No active profile
+  OK             | prof_leave_team                                    | Quitter                                  | Leave
+  OK             | prof_modify                                        | Modifier                                 | Change
+  OK             | prof_no_image                                      | Aucune image                             | No image
+  OK             | prof_passkey_added                                 | Empreinte enregistrée                    | Fingerprint registered
+  OK             | prof_passkey_sub                                   | Authentification biométrique             | Biometric authentication
+  OK             | prof_passphrase_label                              | Passphrase                               | Passphrase
+  OK             | prof_passphrase_sub                                | Mot de passe du compte                   | Account password
+  OK             | prof_role                                          | Rôle                                     | Role
+  OK             | prof_save                                          | Sauvegarder                              | Save changes
+  OK             | prof_section_env                                   | Environnement                            | Environment
+  OK             | prof_section_info                                  | Informations                             | Information
+  OK             | prof_section_security                              | Sécurité                                 | Security
+  OK             | prof_team                                          | Équipe                                   | Team
+  OK             | prof_title                                         | Mon compte                               | My account
+  OK             | prof_updated                                       | Profil mis à jour                        | Profile updated
+  OK             | profile_saved                                      | Profil sauvegardé ✓                      | Profile saved ✓
+  OK             | purge                                              | Purger                                   | Purge
+  OK             | purge_audit                                        | Purger les anciens logs                  | Purge old logs
+  OK             | purge_result                                       | {n} queries importées purgées            | Purged {n} imported queries
+  OK             | purge_sessions                                     | Purger les sessions expirées             | Purge expired sessions
+  OK             | pw_current_required                                | Passphrase actuelle requise.             | Current passphrase is required.
+  OK             | pw_min8_err                                        | Passphrase : minimum 8 caractères.       | Passphrase: minimum 8 characters.
+  OK             | pw_mismatch                                        | Les passphrases ne correspondent pas.    | Passphrases do not match.
+  OK             | pw_updated                                         | Passphrase mise à jour !                 | Passphrase updated!
+  OK             | queries_deleted_from                               | {n} queries supprimées — {name}          | {n} queries deleted — {name}
+  OK             | queries_imported                                   | requêtes importées                       | queries imported
+  OK             | queries_label                                      | Requêtes                                 | Queries
+  OK             | query_created                                      | Query créée                              | Query created
+  OK             | query_deleted                                      | Query supprimée                          | Query deleted
+  OK             | query_updated                                      | Query mise à jour                        | Query updated
+  OK             | read_full                                          | Lire l'article complet                   | Read full article
+  OK             | recent_activity                                    | Activité récente                         | Recent activity
+  OK             | refresh_feeds                                      | Rafraîchir les flux                      | Refresh feeds
+  OK             | reg_confirm_pw                                     | Confirmer la passphrase                  | Confirm passphrase
+  OK             | reg_create_btn                                     | Créer le compte                          | Create account
+  OK             | reg_login_hint                                     | Lettres, chiffres, _ . - uniquement.     | Letters, numbers, _ . - only.
+  OK             | reg_subtitle                                       | Choisissez un login et une passphrase.   | Choose a login and passphrase.
+  OK             | reg_title                                          | Créer un compte                          | Create account
+  OK             | repo_branch                                        | Branche                                  | Branch
+  OK             | repo_del_confirm                                   | Supprimer cette source ? Les queries i   | Delete this repository source? Importe
+  OK             | repo_errors                                        | erreurs                                  | errors
+  OK             | repo_fields_required                               | Nom, propriétaire et dépôt requis.       | Name, owner and repo are required.
+  OK             | repo_name_lbl                                      | Nom                                      | Name
+  OK             | repo_no_repos                                      | Aucun dépôt configuré.                   | No repositories configured.
+  OK             | repo_none_folder                                   | Aucun (pas de dossier)                   | None (no folder)
+  OK             | repo_purge_all_confirm                             | Supprimer TOUTES les queries importées   | Delete ALL imported queries from all r
+  OK             | repo_purge_imported                                | Purger les importées                     | Purge imported
+  OK             | repo_purge_src_confirm                             | Purger toutes les queries importées de   | Purge all imported queries from "{name
+  OK             | repo_reparse                                       | Re-parser                                | Re-parse
+  OK             | repo_reparse_confirm                               | Cela va re-télécharger et re-analyser    | This will re-fetch and re-parse all im
+  OK             | repo_reparse_done                                  | {n} requêtes mises à jour                | {n} queries updated
+  OK             | repo_reparse_tip                                   | Force le re-téléchargement et la re-an   | Force re-fetch and re-parse all files 
+  OK             | repo_sources                                       | Sources GitHub                           | GitHub Repository Sources
+  OK             | repo_sync_all                                      | Tout synchroniser                        | Sync all
+  OK             | repo_target_folder                                 | Dossier cible                            | Target folder
+  OK             | report.btn_copy_md                                 | 📋 Copier le Markdown                    | 📋 Copy Markdown
+  OK             | report.btn_download                                | ⬇ Télécharger le rapport                 | ⬇ Download report
+  OK             | report.btn_preview                                 | 🔍 Aperçu                                | 🔍 Preview
+  OK             | report.complete_overview                           | — Complétez l'onglet Aperçu —            | — Complete the Overview tab —
+  OK             | report.completeness                                | Complétude                               | Completeness
+  OK             | report.conclusion_empty                            | La conclusion est vide — complétez l'o   | Conclusion is empty — fill it in the O
+  OK             | report.custom.btn_reset                            | Réinitialiser                            | Reset
+  OK             | report.custom.btn_save                             | Sauvegarder                              | Save
+  OK             | report.custom.color                                | Couleur de l'en-tête                     | Header color
+  OK             | report.custom.company                              | Nom de l'entreprise                      | Company name
+  OK             | report.custom.company_ph                           | Nom de l'entreprise                      | Company name
+  OK             | report.custom.logo                                 | Logo de l'entreprise                     | Company logo
+  OK             | report.custom.logo_hint                            | PNG, JPG, SVG — max 500 KB\nFond transp  | PNG, JPG, SVG — max 500 KB\nTransparent
+  OK             | report.custom.no_logo                              | Aucun logo                               | No logo
+  OK             | report.custom.remove_logo                          | Supprimer                                | Remove
+  OK             | report.custom.sub                                  | Département / sous-titre                 | Department / subtitle
+  OK             | report.custom.sub_ph                               | Security Operations Center               | Security Operations Center
+  OK             | report.custom.toggle                               | Personnalisation du rapport              | Report customization
+  OK             | report.custom.upload                               | ⬆ Téléverser                             | ⬆ Upload
+  OK             | report.findings                                    | Findings                                 | Findings
+  OK             | report.header_type                                 | RAPPORT D'INVESTIGATION                  | INVESTIGATION REPORT
+  OK             | report.indicators                                  | Indicateurs                              | Indicators
+  OK             | report.label_format                                | Format du rapport                        | Report format
+  OK             | report.malicious                                   | malicious                                | malicious
+  OK             | report.no_findings                                 | Aucun finding enregistré                 | No findings recorded
+  OK             | report.no_iocs                                     | Aucun IoC enregistré                     | No IoCs recorded
+  OK             | report.section_conclusion                          | Conclusion                               | Conclusion
+  OK             | report.section_summary                             | Résumé exécutif                          | Executive Summary
+  OK             | report.settings.saved                              | Paramètres du rapport sauvegardés ✓      | Report settings saved ✓
+  OK             | report.settings.saving                             | Sauvegarde…                              | Saving…
+  OK             | report.severity                                    | Sévérité                                 | Severity
+  OK             | report.unknown                                     | unknown                                  | unknown
+  OK             | repos                                              | Repos                                    | Repos
+  OK             | reset_password                                     | Réinitialiser le mot de passe            | Reset password
+  OK             | reset_upstream                                     | Réinitialiser                            | Reset to upstream
+  OK             | reset_upstream_confirm                             | Réinitialiser depuis l’amont ? Vos mod   | Reset to upstream? Your local changes 
+  OK             | reset_upstream_done                                | Réinitialisé depuis l’amont ✓            | Reset to upstream ✓
+  OK             | save                                               | Enregistrer                              | Save
+  OK             | save_and_check                                     | Sauvegarder et vérifier                  | Save & Check
+  OK             | search                                             | Titre, KQL, tags, MITRE, commentaires…   | Search title, KQL, tags, MITRE, commen
+  OK             | security_settings                                  | Sécurité                                 | Security
+  OK             | select_platform                                    | Choisissez votre plateforme              | Select your platform
+  OK             | sentinel                                           | Microsoft Sentinel                       | Microsoft Sentinel
+  OK             | severity_label                                     | Sévérité                                 | Severity
+  OK             | side_collections                                   | Collections                              | Collections
+  OK             | signin_btn                                         | Se connecter                             | Sign in
+  OK             | source_added                                       | Source ajoutée                           | Source added
+  OK             | source_deleted                                     | Source supprimée                         | Source deleted
+  OK             | source_saved                                       | Source mise à jour                       | Source updated
+  OK             | starred_off                                        | ☆                                        | ☆
+  OK             | starred_on                                         | ★ Favoris                                | ★ Starred
+  OK             | switch_lang_tip                                    | Switch to English                        | Passer en français
+  OK             | sync_error                                         | Erreur sync                              | Sync error
+  OK             | sync_now                                           | Synchroniser                             | Sync now
+  OK             | sync_success                                       | Sync terminé                             | Sync complete
+  OK             | synced_ago                                         | Synchronisé                              | Synced
+  OK             | syncing                                            | Sync…                                    | Syncing…
+  OK             | system_info                                        | Informations système                     | System information
+  OK             | unknown_compat                                     | Inconnu                                  | Unknown
+  OK             | unlock_account                                     | Débloquer le compte                      | Unlock account
+  OK             | unread_alerts                                      | alertes non lues                         | unread alerts
+  OK             | updated_queries                                    | mises à jour                             | updated
+  OK             | vacuum_db                                          | Optimiser la base                        | Vacuum database
+  OK             | variables                                          | Variables                                | Variables
+  OK             | vars_cleared                                       | Variables effacées                       | Variables cleared
+  OK             | vp_clear_all                                       | Tout effacer                             | Clear all
+  OK             | vp_desc                                            | Valeurs pré-remplies automatiquement d   | Pre-filled automatically in all your q
+  OK             | vp_filled_count                                    | {n} / {total} variables remplies         | {n} / {total} variables filled
+  OK             | vp_footer_hint                                     | Les valeurs remplies ici seront pré-re   | Values filled here will be pre-filled 
+  OK             | vp_save_btn                                        | Sauvegarder                              | Save
+  OK             | vp_saved                                           | {n} variable(s) sauvegardée(s)           | {n} variable(s) saved
+  OK             | vp_title                                           | Mes Variables                            | My Variables
+  OK             | watch                                              | Veille                                   | Watch
+  OK             | watch_all_popular_added                            | Toutes les sources populaires sont déj   | All popular sources are already added.
+  OK             | watch_banner                                       | nouvelles alertes cyber correspondent    | new cyber alerts match your queries
+  OK             | watch_purge_confirm                                | Supprimer TOUS les articles de veille    | Purge ALL watch articles?\n\nThis delete
+  OK             | watch_refresh_result                               | {new} nouveaux articles, {matched} cor   | {new} new articles, {matched} matches
+  OK             | watch_sources                                      | Sources de flux                          | Feed sources
+  OK             | wdet_products                                      | Produits                                 | Products
+  OK             | welcome_user                                       | Bienvenue, {name} !                      | Welcome, {name}!
+  OK             | with_matches                                       | Avec correspondances uniquement          | With matches only
+  OK             | wrong_platform                                     | Mauvaise plateforme                      | Wrong platform
+  OK             | ws_close                                           | Fermer                                   | Close
+  OK             | ws_dismiss                                         | Ignorer                                  | Dismiss
+  OK             | ws_no_matches                                      | Aucune query correspondante              | No matching queries
+  OK             | ws_no_matches_sub                                  | Aucune de vos queries KQL ne correspon   | None of your KQL queries match the key
+  OK             | ws_read_article                                    | Lire l’article ↗                         | Read article ↗
+  OK             | wsrc_add_save                                      | Ajouter et sauvegarder                   | Add & save
+  OK             | wsrc_add_title                                     | + Ajouter une source                     | + Add source
+  OK             | wsrc_del                                           | Suppr                                    | Del
+  OK             | wsrc_name_lbl                                      | Nom                                      | Name
+  OK             | wsrc_no_sources                                    | Aucune source configurée.                | No sources configured.
+  OK             | wsrc_test_btn                                      | Tester le feed                           | Test feed
+  OK             | wv_unread_btn                                      | Non lues                                 | Unread
+  OK             | yesterday                                          | Hier                                     | Yesterday
+  OK             | your_connectors                                    | Vos connecteurs                          | Your connectors
+  OK             | your_licenses                                      | Vos licences                             | Your licenses
+
+════════════════════════════════════════════════════════════════════════

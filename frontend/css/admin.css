@@ -1,0 +1,84 @@
+/* admin.css — KQL Vault Admin Portal */
+*, *::before, *::after { box-sizing: border-box; }
+
+body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; margin: 0; }
+
+.adm-topbar {
+  height: 52px; display: flex; align-items: center; padding: 0 16px;
+  border-bottom: 1px solid var(--bd); background: var(--s1); flex-shrink: 0; gap: 12px; z-index: 40;
+}
+.adm-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+.adm-topbar-sep { color: var(--t5); }
+.adm-topbar-crumb { flex: 1; font-size: 13px; font-weight: 600; color: var(--t2); }
+.adm-topbar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.adm-shell { display: flex; flex: 1; overflow: hidden; }
+
+.adm-nav {
+  width: 220px; min-width: 220px; border-right: 1px solid var(--bd);
+  display: flex; flex-direction: column; overflow-y: auto; background: var(--s1); padding: 12px 0;
+}
+.adm-nav-section {
+  padding: 8px 16px; font-size: 10px; font-weight: 700; letter-spacing: .8px;
+  color: var(--t5); text-transform: uppercase;
+}
+.adm-nav-item {
+  display: flex; align-items: center; gap: 9px; padding: 9px 16px;
+  font-size: 13px; color: var(--t3); text-decoration: none; border-left: 2px solid transparent;
+  cursor: pointer; transition: background .12s, color .12s;
+}
+.adm-nav-item:hover { background: var(--s2); color: var(--t1); }
+.adm-nav-item.active { background: var(--s2); color: var(--t1); border-left-color: var(--red); }
+
+.adm-main { flex: 1; overflow-y: auto; padding: 28px 32px; }
+
+.adm-section-hdr { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.adm-section-title { font-size: 22px; font-weight: 800; color: var(--t1); margin: 0 0 6px; }
+.adm-section-sub { font-size: 13px; color: var(--t4); margin: 0; max-width: 560px; }
+
+/* Template cards grid */
+.templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+.template-card {
+  background: var(--s1); border: 1px solid var(--bd); border-radius: 14px;
+  padding: 0; overflow: hidden; display: flex; flex-direction: column;
+  transition: border-color .15s, box-shadow .15s;
+}
+.template-card:hover { border-color: var(--t4); box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+
+.template-card-header {
+  padding: 20px 20px 14px; display: flex; align-items: flex-start; gap: 14px;
+}
+.template-card-icon {
+  font-size: 30px; width: 52px; height: 52px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: var(--s2);
+}
+.template-card-info { flex: 1; min-width: 0; }
+.template-card-name { font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 3px; }
+.template-card-type {
+  font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+  display: inline-block; text-transform: uppercase; letter-spacing: .5px;
+}
+.template-card-desc { padding: 0 20px 14px; font-size: 12px; color: var(--t4); line-height: 1.5; }
+.template-card-sections { padding: 10px 20px; border-top: 1px solid var(--bd); display: flex; flex-wrap: wrap; gap: 5px; }
+.template-card-sec-badge {
+  font-size: 10px; padding: 2px 7px; border-radius: 6px; background: var(--s2);
+  border: 1px solid var(--bd); color: var(--t3);
+}
+.template-card-actions {
+  padding: 12px 20px; border-top: 1px solid var(--bd);
+  display: flex; gap: 7px; background: var(--s2);
+}
+
+/* Section list in modal */
+.sec-item {
+  display: grid; grid-template-columns: 20px 1fr auto auto auto; align-items: center;
+  gap: 8px; padding: 10px 12px; border: 1px solid var(--bd); border-radius: 8px;
+  margin-bottom: 6px; background: var(--s2); cursor: grab;
+}
+.sec-item:active { cursor: grabbing; }
+.sec-item-drag { color: var(--t5); font-size: 14px; }
+.sec-item-name { font-size: 13px; font-weight: 600; color: var(--t1); }
+.sec-item-type { font-size: 10px; padding: 2px 7px; border-radius: 6px; background: var(--s1); border: 1px solid var(--bd); color: var(--t4); }
+.sec-item-req { font-size: 10px; color: var(--red); }
