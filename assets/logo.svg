@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 140" width="540">
+  <defs>
+    <linearGradient id="gradShieldBanner" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield Icon -->
+  <g transform="translate(40,20) scale(0.39)">
+    <path d="M128 16 L216 56 L216 120 C216 184 128 240 128 240 C128 240 40 184 40 120 L40 56 Z"
+          fill="none" stroke="url(#gradShieldBanner)" stroke-width="18" stroke-linejoin="round"/>
+    <polyline points="88,104 120,128 88,152"
+          fill="none" stroke="#0ea5e9" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="128" y1="152" x2="168" y2="152"
+          stroke="#0ea5e9" stroke-width="18" stroke-linecap="round"/>
+  </g>
+  <!-- KQLab wordmark -->
+  <text x="160" y="85" font-family="Inter,-apple-system,sans-serif" font-size="68">
+    <tspan font-weight="800" fill="#0f172a">KQL</tspan><tspan font-weight="300" fill="#0ea5e9">ab</tspan>
+  </text>
+  <!-- Baseline -->
+  <text x="165" y="115" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" fill="#64748b" letter-spacing="3">THE BLUE TEAM QUERY VAULT</text>
+</svg>
