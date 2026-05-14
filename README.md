@@ -82,7 +82,7 @@ npm --version
 ### 1. Clone
 
 ```bash
-git clone https://github.com/YOURUSERNAME/kqlab.git
+git clone https://github.com/vinsk0h/kqlab.git
 cd kqlab
 ```
 
