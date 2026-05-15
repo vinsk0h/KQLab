@@ -1,4 +1,4 @@
-// KQL Vault v3 - Main Application
+// KQLab v3 - Main Application
 var S = {user:null,queries:[],folders:[],search:"",selQ:null,showCreate:false,showNewFolder:false,showImport:false,showProfile:false,showUserDropdown:false,showVarPanel:false,activeFolder:null,lang:null,fm:[],fs:[],fe:[],starOnly:false,queryView:'grid',cf:null,toast:null,regStep:null,mustChangePw:false,showChangePw:false,comments:{},globalVars:{},uiLang:'en',compat:{},compatDetail:{},showEnvModal:false,envProfiles:[],envEdit:null,showRepoModal:false,repoSources:[],repoShowForm:false,repoEdit:null,repoQueryMap:{},repoSyncing:{},repoLastSync:null,view:'queries',watchSummary:null,watchArticles:[],watchFilter:{days:7,source:'all',severity:'all',unread_only:false,matched_only:false},watchSelArticle:null,watchLoading:false,watchSources:[],watchShowSourceForm:false,watchView:'list',watchTableSort:{col:'date',dir:'desc'},watchTestResult:null,watchEditSrc:null,adminTab:'dashboard',adminFeatures:null,adminData:{},adminLoading:{},adminModal:null,adminAudit:{page:0,filters:{}},adminUsers:{search:'',sort:'created_at',dir:'desc'},adminTeamSel:null,adminQSel:{},adminQSearch:'',detailFullscreen:false,loading:false,showShortcuts:false,offline:false};
 var _st = null;
 
@@ -168,7 +168,7 @@ async function boot() {
     if (_gv) S.globalVars = JSON.parse(_gv);
   } catch(e) {}
   try {
-    var _wv = localStorage.getItem('kqlvault_watch_view');
+    var _wv = localStorage.getItem('kqlab_watch_view');
     if (_wv && ['list','compact','mosaic'].includes(_wv)) S.watchView = _wv;
   } catch(e) {}
   try {
@@ -2843,9 +2843,9 @@ function bindEvents(){
   elOn("btn-qv-table", function(){ S.queryView='table'; try{localStorage.setItem('kv-query-view','table');}catch(e){} render(); });
 
   // Watch view toggle (compact/list/table)
-  elOn("btn-wv-compact", function(){ S.watchView='compact'; try{localStorage.setItem('kqlvault_watch_view','compact');}catch(e){} render(); });
-  elOn("btn-wv-list",    function(){ S.watchView='list';    try{localStorage.setItem('kqlvault_watch_view','list');}catch(e){}    render(); });
-  elOn("btn-wv-mosaic",  function(){ S.watchView='mosaic';  try{localStorage.setItem('kqlvault_watch_view','mosaic');}catch(e){}  render(); });
+  elOn("btn-wv-compact", function(){ S.watchView='compact'; try{localStorage.setItem('kqlab_watch_view','compact');}catch(e){} render(); });
+  elOn("btn-wv-list",    function(){ S.watchView='list';    try{localStorage.setItem('kqlab_watch_view','list');}catch(e){}    render(); });
+  elOn("btn-wv-mosaic",  function(){ S.watchView='mosaic';  try{localStorage.setItem('kqlab_watch_view','mosaic');}catch(e){}  render(); });
 
   // Watch filter chips
   document.querySelectorAll("[data-wdays]").forEach(function(x){x.addEventListener("click",function(){ S.watchFilter.days=parseInt(x.getAttribute("data-wdays")); loadWatchFeed(); });});
@@ -3125,7 +3125,7 @@ function bindCardEvents(){document.querySelectorAll(".card[data-qid],.qlist-row[
 
 function updateResolved(){if(!S.selQ)return;var vs={},filled=0,total=0;document.querySelectorAll("[data-vid]").forEach(function(x){total++;var val=x.value.trim();if(val){vs[x.getAttribute("data-vid")]=val;filled++;S.globalVars[x.getAttribute("data-vid")]=val;}});try{localStorage.setItem('kv-gvars',JSON.stringify(S.globalVars));}catch(e){}var resolvedKql=resolveKql(S.selQ.kql,vs);var o=document.getElementById("ko");if(o)o.textContent=resolvedKql;KQLMonaco.setDetailValue(resolvedKql);var w=document.getElementById("vw"),l=document.getElementById("kl"),miss=total-filled;if(w){w.style.display=miss>0?"block":"none";w.textContent=T('det_var_not_filled',{n:miss});}var qlUpd=S.selQ?S.selQ.language||"KQL":"KQL";if(l)l.innerHTML=(miss===0&&total>0)?T('det_query_lbl',{lang:qlUpd})+' <span style="font-size:10px;padding:3px 8px;border-radius:4px;background:#064e3b;color:#6ee7b7;font-weight:700">'+T('det_resolved_ready')+'</span>':T('det_query_lbl',{lang:qlUpd});var cp=document.getElementById("btn-cp");if(cp){cp.textContent=(miss===0&&total>0)?T('det_copy_resolved',{lang:qlUpd}):T('det_copy_lang',{lang:qlUpd});}}
 
-function exportQueries(qs){var b=new Blob([JSON.stringify(qs,null,2)],{type:"application/json"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download="kqlvault-export.json";a.click();URL.revokeObjectURL(u);}
+function exportQueries(qs){var b=new Blob([JSON.stringify(qs,null,2)],{type:"application/json"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download="kqlab-export.json";a.click();URL.revokeObjectURL(u);}
 
 function initTheme(){var t=localStorage.getItem('kv-theme')||'dark';if(t==='light')document.body.classList.add('light');}
 

@@ -5,7 +5,7 @@ const { getDb, hashToken } = require("../db/database");
 const USER_COLS = "id, login, display_name, role, team, failed_attempts, locked_until, must_change_password";
 
 function requireAuth(req, res, next) {
-  const token = req.cookies.kqlvault_session;
+  const token = req.cookies.kqlab_session;
   if (!token) return res.status(401).json({ error: "Not authenticated" });
 
   const db = getDb();
@@ -15,7 +15,7 @@ function requireAuth(req, res, next) {
   ).get(tokenHash);
 
   if (!session) {
-    res.clearCookie("kqlvault_session");
+    res.clearCookie("kqlab_session");
     return res.status(401).json({ error: "Session expired" });
   }
 

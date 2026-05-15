@@ -41,7 +41,7 @@ async function main() {
   // Force re-parse of all non-locally-modified files
   const cleared = db.prepare("UPDATE repo_query_map SET file_sha = NULL WHERE local_modified = 0").run();
 
-  console.log("\n" + COL.bold + "KQL Vault — GitHub Repository Sync" + COL.reset);
+  console.log("\n" + COL.bold + "KQLab — GitHub Repository Sync" + COL.reset);
   console.log(COL.dim + "─".repeat(50) + COL.reset);
   if (cleared.changes > 0) {
     console.log(COL.dim + "SHA cache cleared (" + cleared.changes + " entries) → full re-parse\n" + COL.reset);

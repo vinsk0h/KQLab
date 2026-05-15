@@ -2,7 +2,7 @@ const express = require("express");
 const crypto  = require("crypto");
 const { getDb, auditLog } = require("../db/database");
 const { requireAuth }     = require("../middleware/auth");
-const { sanitize }        = require("../middleware/utils");
+const { sanitize, sanitizeUrl } = require("../middleware/utils");
 
 const router = express.Router();
 router.use(requireAuth);
@@ -29,9 +29,10 @@ router.post("/:queryId", function (req, res) {
   if (rawContent.length > 5000) return res.status(400).json({ error: "Comment too long (max 5000 chars)" });
   const content = sanitize(rawContent, 5000);
 
-  const url = (req.body.url || "").trim();
-  if (url && url.length > 500) return res.status(400).json({ error: "URL too long (max 500 chars)" });
-  if (url && !/^https?:\/\//i.test(url)) return res.status(400).json({ error: "URL must start with http:// or https://" });
+  const rawUrl = (req.body.url || "").trim();
+  if (rawUrl && rawUrl.length > 2048) return res.status(400).json({ error: "URL too long (max 2048 chars)" });
+  const url = rawUrl ? sanitizeUrl(rawUrl) : null;
+  if (rawUrl && !url) return res.status(400).json({ error: "URL must be a valid http:// or https:// address" });
 
   const db    = getDb();
   const query = db.prepare("SELECT id FROM queries WHERE id = ? AND team = ?").get(req.params.queryId, req.user.team);
@@ -40,7 +41,7 @@ router.post("/:queryId", function (req, res) {
   const id = "cmt_" + crypto.randomBytes(8).toString("hex");
   db.prepare(
     "INSERT INTO comments (id, query_id, user_id, author_name, content, url) VALUES (?, ?, ?, ?, ?, ?)"
-  ).run(id, req.params.queryId, req.user.id, req.user.display_name, content, url || null);
+  ).run(id, req.params.queryId, req.user.id, req.user.display_name, content, url);
 
   auditLog(req.user.id, "COMMENT_ADD", "comment", id, { query_id: req.params.queryId }, req.ip);
   res.json(db.prepare("SELECT * FROM comments WHERE id = ?").get(id));
@@ -60,11 +61,12 @@ router.put("/:id", function (req, res) {
   if (rawContent.length > 5000) return res.status(400).json({ error: "Comment too long (max 5000 chars)" });
   const content = sanitize(rawContent, 5000);
 
-  const url = (req.body.url || "").trim();
-  if (url && url.length > 500) return res.status(400).json({ error: "URL too long (max 500 chars)" });
-  if (url && !/^https?:\/\//i.test(url)) return res.status(400).json({ error: "URL must start with http:// or https://" });
+  const rawUrl2 = (req.body.url || "").trim();
+  if (rawUrl2 && rawUrl2.length > 2048) return res.status(400).json({ error: "URL too long (max 2048 chars)" });
+  const url = rawUrl2 ? sanitizeUrl(rawUrl2) : null;
+  if (rawUrl2 && !url) return res.status(400).json({ error: "URL must be a valid http:// or https:// address" });
 
-  db.prepare("UPDATE comments SET content=?, url=? WHERE id=?").run(content, url || null, req.params.id);
+  db.prepare("UPDATE comments SET content=?, url=? WHERE id=?").run(content, url, req.params.id);
   auditLog(req.user.id, "COMMENT_EDIT", "comment", req.params.id, null, req.ip);
   res.json({ ok: true });
 });

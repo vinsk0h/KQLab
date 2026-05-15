@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// i18n audit — KQL Vault
+// i18n audit — KQLab
 // Usage: node scripts/i18n-audit.js
 
 const fs = require('fs');
@@ -175,7 +175,7 @@ const lines = [];
 const hr = '═'.repeat(72);
 
 lines.push(hr);
-lines.push('KQL VAULT — i18n AUDIT REPORT');
+lines.push('KQLAB — i18n AUDIT REPORT');
 lines.push(new Date().toISOString());
 lines.push(hr);
 lines.push('');

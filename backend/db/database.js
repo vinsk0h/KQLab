@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const path = require("path");
 const fs = require("fs");
 
-const DB_PATH = path.join(__dirname, "kqlvault.db");
+const DB_PATH = path.join(__dirname, "kqlab.db");
 
 // P12 — Clé cachée en mémoire après validation initiale (évite process.env à chaque opération crypto)
 var _encKey = null;

@@ -57,7 +57,7 @@ var Auth = {
     var cred = await navigator.credentials.create({
       publicKey: {
         challenge: _b64url2ab(resp.challenge),
-        rp: { name: "KQL Vault", id: location.hostname },
+        rp: { name: "KQLab", id: location.hostname },
         user: {
           id: new TextEncoder().encode(resp.userId),
           name: userLogin,

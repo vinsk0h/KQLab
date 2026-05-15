@@ -346,7 +346,7 @@ router.get("/:id/export", async function(req, res) {
   if (!query) return res.status(404).json({ error: "Query not found" });
 
   const settings = {
-    company_name:        getSetting("company_name",        "KQL Vault"),
+    company_name:        getSetting("company_name",        "KQLab"),
     company_subtitle:    getSetting("company_subtitle",    "Security Operations Center"),
     company_logo:        getSetting("company_logo",        ""),
     report_header_color: getSetting("report_header_color", "#e63946"),

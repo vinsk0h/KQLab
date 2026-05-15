@@ -1,4 +1,4 @@
-// KQL Vault — Automatic platform detection from KQL content
+// KQLab — Automatic platform detection from KQL content
 //
 // Primary source: table_requirements + environment_profiles loaded from the DB
 // via buildExtrasFromDb(db) at call time.

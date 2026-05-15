@@ -4,12 +4,12 @@
 
 **The self-hosted KQL query management platform for SOC teams**
 
-_Passkey authentication · AES-256-GCM encryption · MITRE ATT&CK mapping · Investigation tracking_
+_Passphrase authentication · AES-256-GCM encryption · MITRE ATT&CK mapping · Investigation tracking_
 
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.x-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-better--sqlite3-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![WebAuthn](https://img.shields.io/badge/Auth-WebAuthn%2FPasskeys-4A90D9?style=flat-square&logo=webauthn&logoColor=white)](https://webauthn.io/)
+[![Auth](https://img.shields.io/badge/Auth-Passphrase%2Bscrypt-4A90D9?style=flat-square&logo=shield&logoColor=white)](https://nodejs.org/api/crypto.html)
 [![License: MIT](https://img.shields.io/badge/License-MIT-red?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.1.1-blue?style=flat-square)](CHANGELOG.md)
 
@@ -21,7 +21,7 @@ _Passkey authentication · AES-256-GCM encryption · MITRE ATT&CK mapping · Inv
 
 SOC analysts accumulate hundreds of KQL queries across Microsoft Defender and Azure Sentinel. They live in Notepad, Notion, shared drives — undocumented, unsearchable, scattered across teams.
 
-KQLab centralizes them in a **self-hosted, encrypted platform**: team-based sharing, MITRE ATT&CK mapping, investigation tracking, and passkey authentication — with zero cloud dependency, zero passwords, and zero vendor lock-in.
+KQLab centralizes them in a **self-hosted, encrypted platform**: team-based sharing, MITRE ATT&CK mapping, investigation tracking, and passphrase authentication — with zero cloud dependency and zero vendor lock-in.
 
 Deploy it on your infrastructure. Own your data.
 
@@ -31,19 +31,22 @@ Deploy it on your infrastructure. Own your data.
 
 | Feature | Description |
 |---|---|
-| **Passkey authentication** | WebAuthn/FIDO2 — hardware-backed credentials, no passwords |
+| **Passphrase authentication** | Login + scrypt-hashed passphrase — no plain-text passwords ever stored or transmitted |
 | **Encrypted database** | AES-256-GCM with scrypt KDF, unique salt per stored value |
+| **Multi-language queries** | Write queries in KQL (Defender/Sentinel), DSL (Elastic/ELK), or SPL (Splunk) |
 | **Team scoping** | Queries and folders isolated per team |
 | **MITRE ATT&CK mapping** | Tag queries by tactic and technique |
-| **PICERL mapping** | Map queries to incident response phases |
+| **SANS IR Cycle mapping** | Map queries to PICERL incident response phases |
 | **Variable resolver** | Fill `{{variables}}` before copying a query to the clipboard |
 | **Environment compatibility** | Check query compatibility against your Defender/Sentinel tables |
 | **Investigations** | Track active incidents — IoCs, timeline, findings, reports |
 | **Report export** | Generate PDF, DOCX, and HTML investigation reports |
 | **Report templates** | Customizable section-based report templates (admin-managed) |
-| **Cyber watch** | Built-in threat feed reader with query auto-matching |
-| **GitHub repo sync** | Pull KQL queries directly from public GitHub repositories |
+| **Cyber watch** | Built-in threat feed reader (RSS + CISA JSON) with query auto-matching |
+| **GitHub repo sync** | Pull KQL queries directly from public GitHub repositories (YAML, MD, KQL, auto) |
 | **Import / Export** | Bulk JSON import and export |
+| **Bilingual UI** | Full English and French interface, switchable per user |
+| **Keyboard shortcuts** | `/` search · `n` new query · `e` edit · `f` favorites · `?` shortcut panel |
 | **Admin portal** | User, team, audit log, and settings management |
 | **Audit log** | Full trace of auth and CRUD events with IP and timestamp |
 | **Rate limiting** | 30 auth req/15 min · 120 API req/min |
@@ -57,11 +60,11 @@ Deploy it on your infrastructure. Own your data.
 | Runtime | Node.js ≥ 18 |
 | Framework | Express 4 |
 | Database | SQLite via `better-sqlite3` (synchronous, no server required) |
-| Encryption | AES-256-GCM · scrypt KDF (N=16384) |
-| Authentication | WebAuthn / Passkeys (FIDO2) |
+| Encryption | AES-256-GCM · scrypt KDF (N=16384) · HMAC-SHA256 session tokens |
+| Authentication | Passphrase + scrypt (N=16384) · timing-safe verify · account lockout |
 | Frontend | Vanilla JS SPA — no framework, no bundler |
-| Code editor | Monaco Editor (VS Code engine, via CDN) |
-| Syntax highlighting | PrismJS (KQL, PowerShell, Python, JSON, YAML) |
+| Code editor | Monaco Editor (VS Code engine, via CDN) — KQL, DSL, SPL syntax |
+| Internationalisation | Custom i18n engine (EN/FR, switchable per user) |
 | Charts | Chart.js (admin dashboard) |
 | Reports | pdfkit · docx |
 
@@ -114,10 +117,9 @@ Minimal `.env` for local development:
 PORT=3000
 DB_ENCRYPTION_KEY=<64-char hex key>
 SESSION_SECRET=<64-char hex key>
-RP_ID=localhost
-RP_NAME=KQLab
-ORIGIN=http://localhost:3000
 ```
+
+> `RP_ID`, `RP_NAME`, and `ORIGIN` are legacy fields kept for compatibility — they are not required for passphrase-based auth.
 
 ### 4. Start
 
@@ -125,7 +127,77 @@ ORIGIN=http://localhost:3000
 npm start
 ```
 
-Open `http://localhost:3000` — use demo account `john.doe` to explore.
+Open `http://localhost:3000` — the demo account `john.doe` is pre-seeded (read-only access). Create your own account via the registration form.
+
+---
+
+## Docker
+
+Docker is the recommended deployment method for production — no Node.js install required on the host.
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) ≥ 24
+- [Docker Compose](https://docs.docker.com/compose/install/) v2 (`docker compose`, not `docker-compose`)
+
+### 1. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your values. At minimum, set the three required fields:
+
+```env
+DB_ENCRYPTION_KEY=<64-char hex>
+SESSION_SECRET=<64-char hex>
+```
+
+> No Node.js locally? Generate keys with Docker:
+> ```bash
+> docker run --rm node:20-alpine node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+> ```
+> Run twice — one value per key.
+
+### 2. Build and start
+
+```bash
+docker compose up -d --build
+```
+
+Open `http://localhost:3000` — demo account `john.doe` is pre-seeded.
+
+### Useful commands
+
+```bash
+docker compose logs -f kqlab            # stream logs
+docker compose ps                       # check health status
+docker compose restart kqlab           # restart container
+docker compose down                     # stop (data preserved in volume)
+docker compose down -v                  # stop + delete database volume
+docker exec -it kqlab sh               # open shell inside container
+docker exec kqlab npm run sync-repos   # trigger GitHub repo sync
+```
+
+### Backup and restore
+
+The database lives in a named Docker volume (`kqlab-db`). Back it up with:
+
+```bash
+# Backup
+docker run --rm \
+  -v kqlab-db:/data \
+  -v "$(pwd)":/backup \
+  alpine tar czf /backup/kqlab-$(date +%Y%m%d).tar.gz -C /data .
+
+# Restore (container must be stopped first)
+docker compose down
+docker run --rm \
+  -v kqlab-db:/data \
+  -v "$(pwd)":/backup \
+  alpine tar xzf /backup/kqlab-<date>.tar.gz -C /data
+docker compose up -d
+```
 
 ---
 
@@ -137,12 +209,9 @@ KQLab is designed for self-hosted enterprise deployments behind a reverse proxy 
 
 ```env
 NODE_ENV=production
-RP_ID=kqlab.yourdomain.com
-RP_NAME=KQLab
-ORIGIN=https://kqlab.yourdomain.com
 ```
 
-> WebAuthn requires HTTPS for any non-localhost hostname. `NODE_ENV=production` enables secure cookies and stricter CSP.
+> `NODE_ENV=production` enables secure (HTTPS-only) session cookies and stricter CSP. HTTPS is strongly recommended in production to protect credentials in transit.
 
 ### Recommended setup
 
@@ -150,7 +219,15 @@ ORIGIN=https://kqlab.yourdomain.com
 Internet → HTTPS reverse proxy → KQLab (127.0.0.1:3000)
 ```
 
-Bind KQLab to `127.0.0.1` only and let the reverse proxy handle TLS. The SQLite database is at `backend/db/kqlvault.db` — back it up regularly.
+**Docker (recommended):** set the env vars above in `.env`, then `docker compose up -d --build`. Place a TLS-terminating reverse proxy in front. Example Caddy config:
+
+```
+kqlab.yourdomain.com {
+    reverse_proxy kqlab:3000
+}
+```
+
+**Bare metal:** bind KQLab to `127.0.0.1` only and let the reverse proxy handle TLS. The SQLite database is at `backend/db/kqlab.db` — back it up regularly.
 
 ### Optional integrations
 
@@ -168,10 +245,10 @@ VT_API_KEY=<your VT api key>
 
 | Layer | Protection |
 |---|---|
-| Credentials | AES-256-GCM · unique salt per value · scrypt KDF |
-| Sessions | HMAC-SHA256 hash in DB · httpOnly cookie · 24h TTL · max 5 concurrent |
-| WebAuthn | `userVerification: required` · origin check · counter replay prevention |
-| Account lockout | 5 failed attempts → 15 min lock |
+| Credentials | AES-256-GCM · unique salt per value · scrypt KDF (N=16384) |
+| Passphrase | scrypt hash stored · timing-safe compare · complexity enforced (upper + lower + digit, min 8 chars) |
+| Sessions | HMAC-SHA256 hash in DB · httpOnly cookie · configurable TTL (default 24h) · max 5 concurrent |
+| Account lockout | Configurable threshold (default 5 failed attempts → 15 min lock) |
 | Rate limiting | 30 auth req/15 min · 120 API req/min |
 | Database file | `chmod 600` · `secure_delete` · `auto_vacuum` |
 | HTTP headers | Helmet · strict CSP · `X-Powered-By` removed |
@@ -245,7 +322,7 @@ kqlab/
 │       ├── admin-templates.js  # Report template editor UI
 │       ├── api.js              # REST fetch wrapper (GET/POST/PUT/DELETE)
 │       ├── auth.js             # Auth client helpers
-│       ├── data.js             # MITRE/PICERL constants + enums
+│       ├── data.js             # MITRE/SANS IR Cycle constants, query variable templates, enums
 │       ├── i18n.js             # Internationalisation (FR/EN)
 │       ├── investigations.js   # Investigation UI
 │       ├── kql-monaco.js       # Monaco editor integration
@@ -264,7 +341,7 @@ kqlab/
 │   │   ├── roles.js            # requireWriter(), requireAdmin()
 │   │   └── utils.js            # Re-exports from lib/sanitize + roles
 │   └── routes/
-│       ├── auth.js             # Register · login · passkey · lockout
+│       ├── auth.js             # Register · login · session · lockout
 │       ├── queries.js          # KQL CRUD · star · import · export
 │       ├── folders.js          # Folder CRUD
 │       ├── comments.js         # Per-query comments
@@ -281,6 +358,9 @@ kqlab/
 │   └── API.md                  # Full REST API reference
 ├── .env.example
 ├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
 ├── CHANGELOG.md
 ├── LICENSE
 └── package.json
@@ -300,13 +380,27 @@ taskkill /PID <pid> /F
 ```
 Or set a different `PORT=` in `.env`.
 
-**Passkey not working**
-WebAuthn works on `localhost` without HTTPS (Chrome, Edge). Any other hostname requires HTTPS.
+**Login fails in production (cookie not sent)**
+Session cookies use the `Secure` flag when `NODE_ENV=production`. Ensure you're serving over HTTPS — cookies won't be sent over plain HTTP in production mode.
 
 **Reset the database**
 ```bash
-rm backend/db/kqlvault.db
+rm backend/db/kqlab.db
 npm start   # re-seeds with demo data automatically
+```
+
+**Docker: container exits immediately**
+Check logs: `docker compose logs kqlab`. Most common cause: `DB_ENCRYPTION_KEY` missing or too short (min 32 chars).
+
+**Docker: port already in use**
+Set `PORT=8080` in `.env`, then `docker compose up -d`.
+
+**Docker: healthcheck stuck in "starting"**
+Normal for the first 15 seconds while Node initializes. Check with `docker compose ps` after startup.
+
+**Docker: volume permission error**
+```bash
+docker compose down -v && docker compose up -d --build
 ```
 
 ---

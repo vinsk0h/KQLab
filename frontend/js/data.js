@@ -238,7 +238,7 @@ var LANG = {
     cr_tags:'Tags',cr_tags_ph:'Add+Enter',cr_detected:'Detected: ',
     cr_save_query:'Save query',cr_save_changes:'Save changes',
     // Import
-    imp_upload_desc:'Upload a JSON file exported from KQL Vault.',
+    imp_upload_desc:'Upload a JSON file exported from KQLab.',
     // Folder
     fld_new_title:'New folder',fld_name:'Name',fld_icon:'Icon (2 letters)',fld_create:'Create',
     // Var panel
@@ -387,7 +387,7 @@ var LANG = {
     admin_from_date:'From',admin_to_date:'To',
     admin_apply:'Apply',admin_clear:'Clear',
     admin_db_active:'Active',admin_db_not_set:'NOT SET',
-    admin_backup_desc:'Download a copy of kqlvault.db',
+    admin_backup_desc:'Download a copy of kqlab.db',
     admin_backup_btn:'Download',
     admin_watch_interval:'Fetch feeds every',admin_watch_minutes:'minutes',
     admin_user_login:'Login',admin_user_display:'Display name',admin_user_role:'Role',
@@ -486,7 +486,7 @@ var LANG = {
     cr_save_query:'Enregistrer la requ\u00eate',
     cr_save_changes:'Enregistrer les modifications',
     // Import
-    imp_upload_desc:'Chargez un fichier JSON export\u00e9 depuis KQL Vault.',
+    imp_upload_desc:'Chargez un fichier JSON export\u00e9 depuis KQLab.',
     // Folder
     fld_new_title:'Nouveau dossier',fld_name:'Nom',fld_icon:'Ic\u00f4ne (2 lettres)',
     fld_create:'Cr\u00e9er',
@@ -644,7 +644,7 @@ var LANG = {
     admin_from_date:'Du',admin_to_date:'Au',
     admin_apply:'Appliquer',admin_clear:'R\u00e9initialiser',
     admin_db_active:'Actif',admin_db_not_set:'NON D\u00c9FINIE',
-    admin_backup_desc:'T\u00e9l\u00e9charger une copie de kqlvault.db',
+    admin_backup_desc:'T\u00e9l\u00e9charger une copie de kqlab.db',
     admin_backup_btn:'T\u00e9l\u00e9charger',
     admin_watch_interval:'R\u00e9cup\u00e9rer les flux toutes les',admin_watch_minutes:'minutes',
     admin_user_login:'Identifiant',admin_user_display:'Nom affich\u00e9',admin_user_role:'R\u00f4le',

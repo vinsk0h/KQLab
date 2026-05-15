@@ -1,0 +1,17 @@
+node_modules
+.env
+.env.*
+backend/db/*.db
+backend/db/*.db-wal
+backend/db/*.db-shm
+*.log
+npm-debug.log*
+.git
+.gitignore
+.claude
+CLAUDE.md
+*.md
+docs
+assets
+docker-test.ps1
+docker-compose.dev.yml
