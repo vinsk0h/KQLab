@@ -1,4 +1,4 @@
-// KQL Vault — Cyber Watch Engine
+// KQLab — Cyber Watch Engine
 // Ingestion, keyword extraction, and query matching for cyber news feeds.
 var crypto = require("crypto");
 var https  = require("https");
@@ -14,7 +14,7 @@ async function fetchOgImage(url) {
   if (!url) return null;
   try {
     var resp = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; KQLVault/2.1; +https://github.com/kqlvault)" },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; KQLab/2.1; +https://github.com/kqlab)" },
       signal: AbortSignal.timeout(5000)
     });
     if (!resp.ok) return null;

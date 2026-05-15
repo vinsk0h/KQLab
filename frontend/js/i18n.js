@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════════════
-// KQL Vault — Moteur i18n v2 (chargé en premier)
+// KQLab — Moteur i18n v2 (chargé en premier)
 // Expose window.i18n { t, lang, isEn, setLang, getLang, onLangChange, applyToDOM }
 // T() dans data.js délègue à i18n.t() une fois chargé.
 // ════════════════════════════════════════════════════════════════
@@ -81,7 +81,7 @@ const DICTS = {
     cr_save_query:'Enregistrer la requête',
     cr_save_changes:'Enregistrer les modifications',
     // ── Import ────────────────────────────────────────────────────────────────
-    imp_upload_desc:'Chargez un fichier JSON exporté depuis KQL Vault.',
+    imp_upload_desc:'Chargez un fichier JSON exporté depuis KQLab.',
     // ── Folder ────────────────────────────────────────────────────────────────
     fld_new_title:'Nouveau dossier',fld_name:'Nom',fld_icon:'Icône (2 lettres)',
     fld_create:'Créer',
@@ -147,7 +147,7 @@ const DICTS = {
     admin_folders:'Dossiers',admin_investigations:'Investigations',
     admin_audit:'Journal d’audit',admin_settings:'Paramètres',
     admin_repos:'Sources GitHub',admin_watch:'Veille Cyber',admin_threats:'Menaces',
-    admin_fingerprint:'Environnements',back_to_vault:'Retour au Vault',
+    admin_fingerprint:'Environnements',back_to_vault:'Retour à KQLab',
     create_user:'Créer un utilisateur',reset_password:'Réinitialiser le mot de passe',
     force_change_pw:'Forcer le changement',kill_sessions:'Terminer les sessions',
     unlock_account:'Débloquer le compte',delete_user:'Supprimer l’utilisateur',
@@ -236,7 +236,7 @@ const DICTS = {
     admin_from_date:'Du',admin_to_date:'Au',
     admin_apply:'Appliquer',admin_clear:'Réinitialiser',
     admin_db_active:'Actif',admin_db_not_set:'NON DÉFINIE',
-    admin_backup_desc:'Télécharger une copie de kqlvault.db',
+    admin_backup_desc:'Télécharger une copie de kqlab.db',
     admin_backup_btn:'Télécharger',
     admin_watch_interval:'Récupérer les flux toutes les',admin_watch_minutes:'minutes',
     admin_user_login:'Identifiant',admin_user_display:'Nom affiché',admin_user_role:'Rôle',
@@ -480,7 +480,7 @@ const DICTS = {
     cr_tags:'Tags',cr_tags_ph:'Add+Enter',cr_detected:'Detected: ',
     cr_save_query:'Save query',cr_save_changes:'Save changes',
     // ── Import ────────────────────────────────────────────────────────────────
-    imp_upload_desc:'Upload a JSON file exported from KQL Vault.',
+    imp_upload_desc:'Upload a JSON file exported from KQLab.',
     // ── Folder ────────────────────────────────────────────────────────────────
     fld_new_title:'New folder',fld_name:'Name',fld_icon:'Icon (2 letters)',fld_create:'Create',
     // ── Var panel ─────────────────────────────────────────────────────────────
@@ -540,7 +540,7 @@ const DICTS = {
     admin_teams:'Teams',admin_queries:'Queries',admin_folders:'Folders',
     admin_investigations:'Investigations',admin_audit:'Audit Log',admin_settings:'Settings',
     admin_repos:'Repo Sources',admin_watch:'Cyber Watch',admin_threats:'Threat Intel',
-    admin_fingerprint:'Environments',back_to_vault:'Back to Vault',
+    admin_fingerprint:'Environments',back_to_vault:'Back to KQLab',
     create_user:'Create user',reset_password:'Reset password',
     force_change_pw:'Force password change',kill_sessions:'Kill all sessions',
     unlock_account:'Unlock account',delete_user:'Delete user',create_team:'Create team',
@@ -626,7 +626,7 @@ const DICTS = {
     admin_from_date:'From',admin_to_date:'To',
     admin_apply:'Apply',admin_clear:'Clear',
     admin_db_active:'Active',admin_db_not_set:'NOT SET',
-    admin_backup_desc:'Download a copy of kqlvault.db',
+    admin_backup_desc:'Download a copy of kqlab.db',
     admin_backup_btn:'Download',
     admin_watch_interval:'Fetch feeds every',admin_watch_minutes:'minutes',
     admin_user_login:'Login',admin_user_display:'Display name',admin_user_role:'Role',

@@ -7,7 +7,7 @@ const { requireAuth }   = require("../middleware/auth");
 const { sanitize, requireAdmin, validateAvatarDataUri } = require("../middleware/utils");
 
 const router = express.Router();
-const DB_FILE = path.join(__dirname, "../db/kqlvault.db");
+const DB_FILE = path.join(__dirname, "../db/kqlab.db");
 
 router.use(requireAuth);
 router.use(requireAdmin);
@@ -321,7 +321,7 @@ router.put("/users/:id", function(req, res) {
   params.push(req.params.id);
   db.prepare("UPDATE users SET " + updates.join(", ") + " WHERE id = ?").run(...params);
 
-  auditLog(req.user.id, "ADMIN_USER_UPDATE", "user", req.params.id, req.body, req.ip);
+  auditLog(req.user.id, "ADMIN_USER_UPDATE", "user", req.params.id, { role: req.body.role, team: req.body.team, display_name: req.body.display_name }, req.ip);
   res.json({ ok: true });
 });
 
@@ -546,7 +546,9 @@ router.get("/queries", function(req, res) {
 router.post("/queries/bulk", function(req, res) {
   var db     = getDb();
   var action = req.body.action;
-  var ids    = Array.isArray(req.body.ids) ? req.body.ids : [];
+  var ids    = Array.isArray(req.body.ids)
+    ? req.body.ids.filter(function(id) { return typeof id === "string" && /^[a-zA-Z0-9_-]{1,64}$/.test(id); }).slice(0, 500)
+    : [];
   var value  = req.body.value;
   if (!ids.length) return res.status(400).json({ error: "No ids" });
 
@@ -774,7 +776,7 @@ router.get("/settings", function(req, res) {
 
   res.json({
     instance: {
-      name: getSetting("instance_name", process.env.INSTANCE_NAME || "KQL Vault"),
+      name: getSetting("instance_name", process.env.INSTANCE_NAME || "KQLab"),
       node_version: process.version,
       uptime: Math.floor(process.uptime()),
       uptime_human: formatUptime(Math.floor(process.uptime())),
@@ -882,7 +884,7 @@ router.post("/maintenance/:action", function(req, res) {
       fs.copyFileSync(DB_FILE, backupPath);
       var backupStat = fs.statSync(backupPath);
       res.setHeader("Content-Type", "application/octet-stream");
-      res.setHeader("Content-Disposition", "attachment; filename=\"kqlvault-backup-" + new Date().toISOString().slice(0,10) + ".db\"");
+      res.setHeader("Content-Disposition", "attachment; filename=\"kqlab-backup-" + new Date().toISOString().slice(0,10) + ".db\"");
       res.setHeader("Content-Length", backupStat.size);
       var stream = fs.createReadStream(backupPath);
       stream.pipe(res);

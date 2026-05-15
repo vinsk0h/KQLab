@@ -39,3 +39,8 @@ pids/
 .claude/
 CLAUDE.md
 PUBLISHING_GUIDE.md
+
+# Dev / test environment — not for production repo
+.env.test
+docker-compose.dev.yml
+docker-test.ps1

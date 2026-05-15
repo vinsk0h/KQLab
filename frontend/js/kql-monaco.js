@@ -1,5 +1,5 @@
 // frontend/js/kql-monaco.js
-// Monaco Editor module for KQL Vault
+// Monaco Editor module for KQLab
 
 window.KQLMonaco = (function () {
   'use strict';

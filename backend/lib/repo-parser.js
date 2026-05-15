@@ -51,7 +51,7 @@ const SEVKEYS = ["critical", "high", "medium", "low", "info"];
 // ── GitHub API helpers ────────────────────────────────────────────────────────
 
 function ghHeaders() {
-  var h = { "Accept": "application/vnd.github.v3+json", "User-Agent": "KQLVault" };
+  var h = { "Accept": "application/vnd.github.v3+json", "User-Agent": "KQLab" };
   if (process.env.GITHUB_TOKEN) h["Authorization"] = "token " + process.env.GITHUB_TOKEN;
   return h;
 }

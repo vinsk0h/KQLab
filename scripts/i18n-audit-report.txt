@@ -1,5 +1,5 @@
 ════════════════════════════════════════════════════════════════════════
-KQL VAULT — i18n AUDIT REPORT
+KQLAB — i18n AUDIT REPORT
 2026-05-03T17:34:09.611Z
 ════════════════════════════════════════════════════════════════════════
 
@@ -182,7 +182,7 @@ KQL VAULT — i18n AUDIT REPORT
   ORPHAN         | add_member                                         | Ajouter un membre                        | Add member
   ORPHAN         | admin_apply                                        | Appliquer                                | Apply
   ORPHAN         | admin_backup_btn                                   | Télécharger                              | Download
-  ORPHAN         | admin_backup_desc                                  | Télécharger une copie de kqlvault.db     | Download a copy of kqlvault.db
+  ORPHAN         | admin_backup_desc                                  | Télécharger une copie de kqlab.db     | Download a copy of kqlab.db
   ORPHAN         | admin_bulk_delete                                  | Supprimer la sélection                   | Delete selected
   ORPHAN         | admin_bulk_severity                                | Changer la sévérité…                     | Change severity…
   ORPHAN         | admin_clear                                        | Réinitialiser                            | Clear

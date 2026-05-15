@@ -251,7 +251,7 @@ async function generatePDF(investigation, findings, iocs, analyst, settings, lan
 
   return new Promise((resolve, reject) => {
     const accent     = (settings && settings.report_header_color) || '#e63946';
-    const company    = (settings && settings.company_name)        || 'KQL Vault';
+    const company    = (settings && settings.company_name)        || 'KQLab';
     const companySub = (settings && settings.company_subtitle)    || 'Security Operations Center';
     const accentRgb  = hex2rgb(accent);
 
@@ -261,7 +261,7 @@ async function generatePDF(investigation, findings, iocs, analyst, settings, lan
       info: {
         Title:   safe(investigation.title),
         Author:  safe((analyst && analyst.display_name) || company),
-        Creator: 'KQL Vault — Security Investigation Platform',
+        Creator: 'KQLab — Security Investigation Platform',
         Subject: 'Security Investigation Report',
       },
     });
@@ -519,7 +519,7 @@ function renderCover(doc, investigation, analyst, accent, accentRgb, company, su
 // Monogramme/logo textuel fallback (utilisé en interne dans renderCover)
 function _coverTextLogo(doc, company, sub, x, y) {
   doc.font('Helvetica-Bold').fontSize(18).fillColor('#f1f5f9', 1)
-     .text(safe(company).toUpperCase() || 'KQL VAULT', x, y, { lineBreak: false });
+     .text(safe(company).toUpperCase() || 'KQLAB', x, y, { lineBreak: false });
   if (sub) {
     doc.font('Helvetica').fontSize(9).fillColor('#64748b', 1)
        .text(safe(sub), x, y + 25, { lineBreak: false });
@@ -883,7 +883,7 @@ function parseMarkdownBlocks(md) {
 // ─────────────────────────────────────────────────────────────────────────────
 async function generateDOCX(investigation, findings, iocs, analyst, settings, lang = 'fr') {
   const accentHex   = ((settings && settings.report_header_color) || '#e63946').replace('#', '');
-  const companyName = (settings && settings.company_name)     || 'KQL Vault';
+  const companyName = (settings && settings.company_name)     || 'KQLab';
   const companySub  = (settings && settings.company_subtitle) || 'Security Operations Center';
   const logoData    = (settings && settings.company_logo)     || null;
 
@@ -1239,7 +1239,7 @@ async function generateQueryPDF(query, settings, lang) {
 
   return new Promise((resolve, reject) => {
     const accent     = (settings && settings.report_header_color) || '#e63946';
-    const company    = (settings && settings.company_name)        || 'KQL Vault';
+    const company    = (settings && settings.company_name)        || 'KQLab';
     const accentRgb  = hex2rgb(accent);
 
     const doc = new PDFDocument({
@@ -1248,7 +1248,7 @@ async function generateQueryPDF(query, settings, lang) {
       info: {
         Title:   safe(query.title),
         Author:  company,
-        Creator: 'KQL Vault — Query Reference',
+        Creator: 'KQLab — Query Reference',
         Subject: 'KQL Query Reference Sheet',
       },
     });
@@ -1380,7 +1380,7 @@ async function generateQueryPDF(query, settings, lang) {
 function generateHTML(investigation, findings, iocs, analyst, settings, lang) {
   lang = lang || 'fr';
   const accent     = (settings && settings.report_header_color) || '#e63946';
-  const company    = (settings && settings.company_name)        || 'KQL Vault';
+  const company    = (settings && settings.company_name)        || 'KQLab';
   const companySub = (settings && settings.company_subtitle)    || 'Security Operations Center';
 
   function esc(s) {

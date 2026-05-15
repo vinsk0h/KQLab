@@ -1,6 +1,6 @@
 const express = require("express");
 const crypto  = require("crypto");
-const { getDb, hashPassword, verifyPassword, hashToken, auditLog, getSetting } = require("../db/database");
+const { getDb, hashPassword, verifyPassword, hashToken, encrypt, auditLog, getSetting } = require("../db/database");
 const { requireAuth } = require("../middleware/auth");
 const { sanitize, validateAvatarDataUri } = require("../middleware/utils");
 
@@ -13,7 +13,7 @@ function createSession(userId, req) {
   var expires = new Date(Date.now() + ttlHours * 60 * 60 * 1000).toISOString();
   var db = getDb();
   var maxSessions = parseInt(getSetting("max_sessions_per_user", "5")) || 5;
-  var count = db.prepare("SELECT COUNT(*) as c FROM sessions WHERE user_id = ?").get(userId).c;
+  var count = db.prepare("SELECT COUNT(*) as c FROM sessions WHERE user_id = ? AND expires_at > datetime('now')").get(userId).c;
   if (count >= maxSessions) {
     db.prepare("DELETE FROM sessions WHERE user_id = ? AND expires_at = (SELECT MIN(expires_at) FROM sessions WHERE user_id = ?)").run(userId, userId);
   }
@@ -28,7 +28,7 @@ function createSession(userId, req) {
 
 // Bug fix: maxAge doit correspondre au TTL configuré en base (session_ttl_hours)
 function setCookie(res, token, ttlHours) {
-  res.cookie("kqlvault_session", token, {
+  res.cookie("kqlab_session", token, {
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
@@ -243,13 +243,15 @@ router.post("/passkey/register", requireAuth, function (req, res) {
 
 // POST /api/auth/logout
 router.post("/logout", function (req, res) {
-  var token = req.cookies.kqlvault_session;
+  var token = req.cookies.kqlab_session;
   if (token) {
     var db = getDb();
-    db.prepare("DELETE FROM sessions WHERE token_hash = ?").run(hashToken(token));
-    auditLog(null, "LOGOUT", null, null, null, req.ip);
+    var tokenHash = hashToken(token);
+    var session = db.prepare("SELECT user_id FROM sessions WHERE token_hash = ?").get(tokenHash);
+    db.prepare("DELETE FROM sessions WHERE token_hash = ?").run(tokenHash);
+    auditLog(session ? session.user_id : null, "LOGOUT", null, null, null, req.ip);
   }
-  res.clearCookie("kqlvault_session");
+  res.clearCookie("kqlab_session");
   res.json({ ok: true });
 });
 

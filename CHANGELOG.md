@@ -1,71 +1,83 @@
 # Changelog
 
-All notable changes to KQL Vault are documented here.
+All notable changes to KQLab are documented here.
 
-## [2.1.1] - 2026-03-30
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Security
-- Comments: add `sanitize()` on content field (POST + PUT) — prevents XSS via stored comment body
-- Comments: add URL protocol validation — rejects non-http/https URLs
-- Comments: raise max comment length from 1000 to 5000 chars
-- Auth: add password complexity requirement (uppercase + lowercase + digit) on register and change-password
-- Rate limiting: add general API limiter (120 req/min on all /api/ routes)
-- Rate limiting: reduce auth limiter from 100 to 30 req per 15 min
+---
 
-### Changed
-- Extract sanitization helpers to `backend/lib/sanitize.js`
-- Extract role middleware to `backend/middleware/roles.js` (`requireWriter`, `requireAdmin`)
-- `backend/middleware/utils.js` now re-exports from both — all existing imports unchanged
-- Add `LICENSE` (MIT)
-- Add `"license": "MIT"` to `package.json`
-- Update project structure in README
+## [Unreleased]
 
-## [2.1.0] - 2026-03-20
+---
+
+## [1.0.0] - 2026-05-15
+
+Initial public release.
 
 ### Added
-- Admin portal (`/admin.html`) with user/team/audit management
-- Folder rename and delete (personal folders)
-- Move query to folder (drag or via detail modal)
-- Team management: create, rename, delete, add members
-- Passkey reset for users (admin)
-- Account unlock (admin)
-- Audit log viewer in admin portal
-- `.gitignore` file
-- `CHANGELOG.md`
-- Git branching strategy in README
-- Windows deployment guide
 
-### Changed
-- Folders API now supports PUT (rename) and DELETE
-- Queries API now supports PUT /:id/move
-- Session duration reduced to 24h
-- Max 5 concurrent sessions per user
+**Core**
+- KQL query manager for SOC teams (Microsoft Defender / Azure Sentinel)
+- MITRE ATT&CK tactic + technique mapping per query
+- PICERL phase tagging (Preparation, Identification, Containment, Eradication, Recovery, Lessons Learned)
+- Severity and environment tagging
+- Variable resolver — fill `{{variables}}` before copying to clipboard
+- Import / export queries as JSON
+- 12 community KQL queries seeded from Bert-JanP
 
-### Security
-- VULN-01 FIX: unique random salt per encrypted value
-- VULN-02 FIX: origin validation on WebAuthn
-- VULN-03 FIX: counter verification (replay prevention)
-- VULN-04 FIX: session tokens hashed with HMAC-SHA256
-- VULN-05 FIX: expired session cleanup
-- VULN-06 FIX: DB file permissions chmod 600
-- VULN-07 FIX: secure cookie flag in production
-- VULN-08 FIX: dotenv in dependencies
+**Authentication**
+- WebAuthn / Passkey login — no passwords
+- Demo mode with pre-seeded data
+- Account lockout after 5 failed attempts (15-minute cooldown)
+- Admin unlock for locked accounts
+- Passkey reset (admin)
 
-## [2.0.0] - 2026-03-19
+**Backend**
+- Node.js + Express REST API
+- SQLite via `better-sqlite3` (synchronous API)
+- AES-256-GCM encryption for all sensitive fields (unique salt per value)
+- HMAC-SHA256 session token hashing
+- Session TTL: 24 hours, max 5 concurrent sessions per user
+- Background worker prunes expired sessions every 15 minutes
+- Rate limiting: 30 auth requests / 15 min, 120 API requests / min
+- Helmet + compression middleware
+- Request logging
 
-### Added
-- Full Node.js/Express backend
-- SQLite database with AES-256-GCM encryption
-- WebAuthn passkey authentication
-- REST API for queries, folders, auth
-- 12 community KQL queries (Bert-JanP)
-- Import/Export JSON
-- Variable resolver (fill before copy)
-- MITRE ATT&CK + PICERL mapping
+**Frontend**
+- Vanilla JS SPA — no framework, no bundler
+- Monaco Editor with KQL syntax highlighting
+- i18n support (English / French)
 
-## [1.0.0] - 2026-03-18
+**Folders & Teams**
+- Personal folders (user-scoped)
+- Team folders (team-scoped)
+- Folder rename and delete
+- Move query between folders (drag or modal)
 
-### Added
-- Initial HTML standalone version
-- Client-side rendering
-- Demo mode
+**Admin Portal** (`/admin.html`)
+- User management: create, edit, delete
+- Team management: create, rename, delete, add/remove members
+- Audit log viewer
+- Dashboard stats
+
+**Security**
+- Origin validation on WebAuthn
+- Authenticator counter verification (replay prevention)
+- Expired session cleanup
+- DB file permissions: `chmod 600`
+- Secure cookie flag in production (`NODE_ENV=production`)
+- XSS sanitization on all user-supplied content
+- URL protocol validation (http/https only)
+- Dotenv loaded as a runtime dependency
+
+**Infrastructure**
+- Docker support: multi-stage `Dockerfile` (builder → production)
+- `docker-compose.yml` for local dev
+- `.dockerignore`
+- MIT license
+
+---
+
+[Unreleased]: https://github.com/vinsk0h/KQLab/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/vinsk0h/KQLab/releases/tag/v1.0.0

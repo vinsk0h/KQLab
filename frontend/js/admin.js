@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════════════
-// KQL Vault — Admin SPA (integrated into main app)
+// KQLab — Admin SPA (integrated into main app)
 // Loaded after app.js. Uses S, T, esc, API, render globals.
 // ════════════════════════════════════════════════════════════════
 
@@ -852,7 +852,7 @@ function renderAdminSettings(data) {
 
   h += settingsSection('🖥️', T('system_info'),
     '<div class="settings-table">'
-    + staticRow('Instance name', inst.name || 'KQL Vault')
+    + staticRow('Instance name', inst.name || 'KQLab')
     + staticRow('DB encryption', inst.encryption_active ? 'Active' : 'NOT SET', encBadge)
     + staticRow('Node.js', inst.node_version || '—')
     + staticRow('Uptime', inst.uptime_human || '—')
@@ -884,7 +884,7 @@ function renderAdminSettings(data) {
     + '<button id="btn-maint-purge-audit" style="font-size:12px;padding:6px 14px;color:var(--red);border-color:var(--red3)">Run</button></div>'
     + '<div class="settings-maint-row"><div><div class="settings-maint-title">'+T('vacuum_db')+'</div><div class="settings-maint-desc">Reclaim unused space and defragment DB</div></div>'
     + '<button id="btn-maint-vacuum" style="font-size:12px;padding:6px 14px">Run</button></div>'
-    + '<div class="settings-maint-row" style="border-bottom:none"><div><div class="settings-maint-title">'+T('export_backup')+'</div><div class="settings-maint-desc">Download a copy of kqlvault.db</div></div>'
+    + '<div class="settings-maint-row" style="border-bottom:none"><div><div class="settings-maint-title">'+T('export_backup')+'</div><div class="settings-maint-desc">Download a copy of kqlab.db</div></div>'
     + '<a href="/api/admin/maintenance/backup" download><button style="font-size:12px;padding:6px 14px">Download</button></a></div>'
     + '</div>'
   );

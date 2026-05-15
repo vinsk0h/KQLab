@@ -1,0 +1,40 @@
+services:
+  kqlab:
+    build:
+      context: .
+      target: production
+    image: kqlab:production
+    container_name: kqlab
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - kqlab-db:/app/backend/db
+    networks:
+      - kqlab-net
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:${PORT:-3000}/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+networks:
+  kqlab-net:
+    driver: bridge
+
+volumes:
+  kqlab-db:
+    name: kqlab-db

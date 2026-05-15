@@ -57,10 +57,10 @@ router.post("/", requireWriter, function (req, res) {
     req.user.team,
     req.user.id,
     req.user.display_name,
-    (b.description || "").slice(0, 5000),
+    sanitize(b.description || "", 5000),
     templateId,
     sanitize(b.client_name || "", 200),
-    b.mission_type || null
+    sanitize(b.mission_type || "", 100) || null
   );
 
   // If a template was chosen, copy its sections into investigation_section_content
@@ -185,7 +185,7 @@ router.get("/:id/report", function (req, res) {
   ).all(req.params.id);
 
   const settings = {
-    company_name:        getSetting("company_name",        "KQL Vault"),
+    company_name:        getSetting("company_name",        "KQLab"),
     company_subtitle:    getSetting("company_subtitle",    "Security Operations Center"),
     company_logo:        getSetting("company_logo",        ""),
     report_header_color: getSetting("report_header_color", "#e63946"),
