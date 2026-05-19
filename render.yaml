@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: kqlab
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      # Render injects PORT=10000 automatically — no need to set it here
+
+      # Secrets — Render generates a random value on first deploy
+      - key: DB_ENCRYPTION_KEY
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true
+
+      # WebAuthn — MUST match your actual Render URL
+      # After first deploy: check your service URL in the Render dashboard
+      # then update these two values and redeploy
+      - key: RP_ID
+        value: kqlab.onrender.com
+      - key: RP_NAME
+        value: KQLab
+      - key: ORIGIN
+        value: https://kqlab.onrender.com
+
+      # Optional — uncomment and set if you want GitHub/VT enrichment
+      # - key: GITHUB_TOKEN
+      #   value: ""
+      # - key: VT_API_KEY
+      #   value: ""

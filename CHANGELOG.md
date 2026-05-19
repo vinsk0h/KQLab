@@ -11,6 +11,25 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.0] - 2026-05-19
+
+### Added
+
+**Infrastructure**
+- `docker/compose.dev.yml` — dedicated dev compose with hot-reload and debug port
+- `scripts/docker-test.ps1` — automated Docker smoke test suite (prod + dev modes)
+- `scripts/reset-admin.js` — utility to reset admin credentials without DB access
+- `render.yaml` — one-click Render.com deployment config (free tier, Docker runtime)
+
+**Documentation**
+- `docs/index.html` — GitHub Pages landing page (showcase + live demo link + self-host guide)
+
+**Backend**
+- Expanded `backend/db/database.js` with additional query helpers and report generation support
+- Repo parser and report generator improvements
+
+---
+
 ## [1.0.0] - 2026-05-15
 
 Initial public release.
