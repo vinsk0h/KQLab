@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="KQLab — Collaborative KQL query manager for SOC teams. MITRE ATT&CK mapping, team sharing, passkey auth.">
+  <meta property="og:title" content="KQLab — KQL Query Manager for SOC Teams">
+  <meta property="og:description" content="Centralized KQL library with MITRE ATT&CK mapping, team sharing, and passkey authentication.">
+  <meta property="og:image" content="https://vinsk0h.github.io/KQLab/og-preview.png">
+  <title>KQLab — KQL Query Manager for SOC Teams</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='40 16 176 228'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230ea5e9'/%3E%3Cstop offset='100%25' stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M128 16 L216 56 L216 120 C216 184 128 240 128 240 C128 240 40 184 40 120 L40 56 Z' fill='none' stroke='url(%23g)' stroke-width='18' stroke-linejoin='round'/%3E%3Cpolyline points='88,104 120,128 88,152' fill='none' stroke='%230ea5e9' stroke-width='18' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='128' y1='152' x2='168' y2='152' stroke='%230ea5e9' stroke-width='18' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base:    #0f172a;
+      --bg-surface: #1e293b;
+      --bg-raised:  #263347;
+      --primary:    #0ea5e9;
+      --primary-h:  #38bdf8;
+      --accent:     #3b82f6;
+      --intel:      #7c3aed;
+      --t1: #f1f5f9;
+      --t2: #cbd5e1;
+      --t3: #94a3b8;
+      --t4: #64748b;
+      --border:     rgba(148,163,184,0.08);
+      --border-m:   rgba(148,163,184,0.14);
+      --border-s:   rgba(148,163,184,0.24);
+      --font-ui:    'Inter', -apple-system, sans-serif;
+      --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-base);
+      color: var(--t1);
+      font-family: var(--font-ui);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { color: var(--primary-h); }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 60px;
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 18px; font-weight: 700; color: var(--t1);
+    }
+    .nav-logo svg { width: 30px; height: 30px; flex-shrink: 0; }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; font-family: var(--font-ui);
+      cursor: pointer; border: none; transition: all .15s;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--t2);
+      border: 1px solid var(--border-m);
+    }
+    .btn-ghost:hover { background: var(--bg-raised); color: var(--t1); border-color: var(--border-s); }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--primary-h); color: #fff; }
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid rgba(14,165,233,0.4);
+    }
+    .btn-outline:hover { background: rgba(14,165,233,0.08); border-color: var(--primary); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 140px 32px 80px;
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    @media (max-width: 800px) {
+      .hero { grid-template-columns: 1fr; padding: 120px 24px 60px; gap: 40px; }
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; font-family: var(--font-mono);
+      background: rgba(14,165,233,0.1);
+      border: 1px solid rgba(14,165,233,0.25);
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    .badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--primary);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; } 50% { opacity: .3; }
+    }
+    h1 {
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800; line-height: 1.15;
+      letter-spacing: -.02em;
+      margin-bottom: 20px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 17px; color: var(--t3); line-height: 1.7;
+      margin-bottom: 32px;
+    }
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-cta .btn { padding: 10px 22px; font-size: 14px; }
+
+    /* ── Code preview ── */
+    .code-preview {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-m);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,.4);
+    }
+    .code-titlebar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px;
+      background: var(--bg-raised);
+      border-bottom: 1px solid var(--border);
+    }
+    .dot-r { width:10px;height:10px;border-radius:50%;background:#ff5f57; }
+    .dot-y { width:10px;height:10px;border-radius:50%;background:#febc2e; }
+    .dot-g { width:10px;height:10px;border-radius:50%;background:#28c840; }
+    .code-filename { font-size: 12px; color: var(--t4); font-family: var(--font-mono); margin-left: 4px; }
+    .code-tags {
+      display: flex; gap: 6px; margin-left: auto;
+    }
+    .tag {
+      padding: 2px 8px; border-radius: 4px;
+      font-size: 11px; font-weight: 600; font-family: var(--font-mono);
+    }
+    .tag-mitre { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+    .tag-picerl { background: rgba(14,165,233,0.12); color: var(--primary); border: 1px solid rgba(14,165,233,0.25); }
+    .tag-high { background: rgba(255,107,53,0.12); color: #ff6b35; border: 1px solid rgba(255,107,53,0.25); }
+    .code-body { padding: 20px; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; }
+    .kw  { color: #7dd3fc; }   /* keywords */
+    .fn  { color: #a78bfa; }   /* functions */
+    .str { color: #86efac; }   /* strings */
+    .num { color: #fbbf24; }   /* numbers */
+    .cm  { color: var(--t4); } /* comments */
+    .op  { color: #f1f5f9; }   /* operators */
+    .tbl { color: #38bdf8; }   /* table names */
+
+    /* ── Stats bar ── */
+    .stats {
+      max-width: 1100px; margin: 0 auto 80px;
+      padding: 0 32px;
+      display: flex; gap: 0;
+      border: 1px solid var(--border-m);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    @media (max-width: 700px) {
+      .stats { flex-wrap: wrap; }
+      .stat { flex: 1 1 50%; border-right: none !important; }
+      .stat:nth-child(odd) { border-right: 1px solid var(--border-m) !important; }
+    }
+    .stat {
+      flex: 1; padding: 24px 28px;
+      border-right: 1px solid var(--border-m);
+      background: var(--bg-surface);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-val {
+      font-size: 28px; font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 12px; color: var(--t4); margin-top: 2px; }
+
+    /* ── Section ── */
+    section { max-width: 1100px; margin: 0 auto; padding: 0 32px 80px; }
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--primary);
+      margin-bottom: 12px;
+      font-family: var(--font-mono);
+    }
+    h2 {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 800; line-height: 1.2;
+      letter-spacing: -.02em; margin-bottom: 12px;
+    }
+    .section-desc { font-size: 16px; color: var(--t3); max-width: 560px; margin-bottom: 48px; }
+
+    /* ── Feature grid ── */
+    .features { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border-radius: 12px; overflow: hidden; }
+    @media (max-width: 900px) { .features { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 560px) { .features { grid-template-columns: 1fr; } }
+    .feature {
+      background: var(--bg-surface);
+      padding: 28px;
+      transition: background .15s;
+    }
+    .feature:hover { background: var(--bg-raised); }
+    .feature-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 16px;
+    }
+    .feature h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .feature p { font-size: 13px; color: var(--t3); line-height: 1.6; }
+
+    /* ── MITRE preview ── */
+    .mitre-grid {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-m);
+      border-radius: 12px;
+      margin-bottom: 48px;
+    }
+    .tactic {
+      padding: 6px 12px; border-radius: 6px;
+      font-size: 12px; font-weight: 600; font-family: var(--font-mono);
+      border: 1px solid; cursor: default;
+      transition: transform .1s;
+    }
+    .tactic:hover { transform: translateY(-2px); }
+
+    /* ── Deploy section ── */
+    .deploy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 700px) { .deploy-grid { grid-template-columns: 1fr; } }
+    .deploy-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-m);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .deploy-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 16px 20px;
+      background: var(--bg-raised);
+      border-bottom: 1px solid var(--border);
+    }
+    .deploy-header h3 { font-size: 14px; font-weight: 600; }
+    .deploy-header .ico { font-size: 18px; }
+    .deploy-body { padding: 20px; }
+    .deploy-body pre {
+      font-family: var(--font-mono); font-size: 12.5px;
+      color: var(--t2); line-height: 1.9;
+    }
+    .deploy-body pre .cmd-prefix { color: var(--t4); user-select: none; }
+    .deploy-body pre .cmd-kw { color: #7dd3fc; }
+    .deploy-body pre .cmd-val { color: #86efac; }
+    .deploy-body pre .cmd-flag { color: #fbbf24; }
+
+    /* ── CTA Banner ── */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(59,130,246,0.08));
+      border: 1px solid rgba(14,165,233,0.2);
+      border-radius: 16px;
+      padding: 48px;
+      text-align: center;
+    }
+    .cta-banner h2 { margin-bottom: 12px; }
+    .cta-banner p { color: var(--t3); margin-bottom: 28px; }
+    .cta-banner .btn { padding: 12px 28px; font-size: 15px; }
+    .cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      color: var(--t4); font-size: 13px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    footer a { color: var(--t3); }
+    footer a:hover { color: var(--t1); }
+    .footer-links { display: flex; gap: 20px; justify-content: center; margin-bottom: 16px; }
+
+    /* ── GitHub stars badge ── */
+    .gh-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 6px;
+      font-size: 12px; font-weight: 500;
+      background: var(--bg-raised);
+      border: 1px solid var(--border-m);
+      color: var(--t2);
+      transition: border-color .15s;
+    }
+    .gh-badge:hover { border-color: var(--border-s); color: var(--t1); }
+
+    /* ── Demo banner ── */
+    .demo-notice {
+      max-width: 1100px; margin: 0 auto 0;
+      padding: 0 32px;
+    }
+    .demo-notice-inner {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; border-radius: 8px;
+      background: rgba(255,214,10,0.06);
+      border: 1px solid rgba(255,214,10,0.18);
+      font-size: 13px; color: #fcd34d;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="#">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="40 16 176 228">
+      <defs>
+        <linearGradient id="navG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0ea5e9"/>
+          <stop offset="100%" stop-color="#3b82f6"/>
+        </linearGradient>
+      </defs>
+      <path d="M128 16 L216 56 L216 120 C216 184 128 240 128 240 C128 240 40 184 40 120 L40 56 Z"
+            fill="none" stroke="url(#navG)" stroke-width="18" stroke-linejoin="round"/>
+      <polyline points="88,104 120,128 88,152" fill="none" stroke="#0ea5e9"
+            stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="128" y1="152" x2="168" y2="152" stroke="#0ea5e9" stroke-width="18" stroke-linecap="round"/>
+    </svg>
+    KQLab
+  </a>
+  <div class="nav-links">
+    <a href="https://github.com/vinsk0h/KQLab" target="_blank" rel="noopener" class="gh-badge">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+      GitHub
+    </a>
+    <a href="#deploy" class="btn btn-ghost">Deploy</a>
+    <a href="#demo" class="btn btn-primary">Try Demo</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div>
+    <div class="badge"><span class="dot"></span> Open Source · MIT License</div>
+    <h1>KQL query library for <span>SOC teams</span></h1>
+    <p class="hero-desc">
+      Centralized KQL management with MITRE ATT&CK mapping, PICERL phases, team sharing, and passkey authentication. Built for Microsoft Defender and Azure Sentinel analysts.
+    </p>
+    <div class="hero-cta">
+      <a id="demo" href="#demo-section" class="btn btn-primary">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+        Try Live Demo
+      </a>
+      <a href="https://github.com/vinsk0h/KQLab" target="_blank" rel="noopener" class="btn btn-outline">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </div>
+
+  <!-- KQL code preview -->
+  <div class="code-preview">
+    <div class="code-titlebar">
+      <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+      <span class="code-filename">detect-pass-spray.kql</span>
+      <div class="code-tags">
+        <span class="tag tag-mitre">T1110.003</span>
+        <span class="tag tag-picerl">Detect</span>
+        <span class="tag tag-high">High</span>
+      </div>
+    </div>
+    <div class="code-body"><pre><span class="tbl">SigninLogs</span>
+<span class="op">|</span> <span class="kw">where</span> TimeGenerated <span class="op">&gt;</span> <span class="fn">ago</span>(<span class="num">1h</span>)
+<span class="op">|</span> <span class="kw">where</span> ResultType <span class="op">==</span> <span class="str">"50126"</span>
+<span class="op">|</span> <span class="kw">summarize</span>
+    FailedAttempts <span class="op">=</span> <span class="fn">count</span>(),
+    TargetedUsers  <span class="op">=</span> <span class="fn">dcount</span>(UserPrincipalName),
+    Locations      <span class="op">=</span> <span class="fn">make_set</span>(Location)
+    <span class="kw">by</span> IPAddress
+<span class="op">|</span> <span class="kw">where</span> TargetedUsers <span class="op">&gt;</span> <span class="num">5</span>
+      <span class="kw">and</span> FailedAttempts <span class="op">&gt;</span> <span class="num">20</span>
+<span class="op">|</span> <span class="kw">order by</span> FailedAttempts <span class="kw">desc</span>
+<span class="cm">// Password spray pattern detected</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-val">14</div>
+    <div class="stat-label">MITRE ATT&CK Tactics</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val">6</div>
+    <div class="stat-label">PICERL Phases</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val">3</div>
+    <div class="stat-label">Role Levels</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val">0</div>
+    <div class="stat-label">Passwords Required</div>
+  </div>
+</div>
+
+<!-- Features -->
+<section>
+  <div class="section-label">Capabilities</div>
+  <h2>Everything a SOC team needs</h2>
+  <p class="section-desc">Built for analysts who live in KQL. Not a generic note app — purpose-built for detection engineering.</p>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(124,58,237,.12)">🎯</div>
+      <h3>MITRE ATT&CK Mapping</h3>
+      <p>Tag queries with tactics and techniques. Filter your library by ATT&CK coverage gaps.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(14,165,233,.12)">🔍</div>
+      <h3>PICERL Framework</h3>
+      <p>Map queries to Prepare, Identify, Contain, Eradicate, Recover, Lessons Learned phases.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(59,130,246,.12)">👥</div>
+      <h3>Team Sharing</h3>
+      <p>Scoped to teams. Personal and shared folders. Three roles: Admin, Analyst, Viewer.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(34,197,94,.12)">🔑</div>
+      <h3>Passkey Auth</h3>
+      <p>WebAuthn/FIDO2 only — no passwords, no OAuth dependencies. Works offline once enrolled.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(245,158,11,.12)">✏️</div>
+      <h3>Monaco KQL Editor</h3>
+      <p>Full KQL syntax highlighting powered by Monaco (VS Code's editor). Auto-complete, bracket matching.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(239,68,68,.12)">📦</div>
+      <h3>Docker Ready</h3>
+      <p>Multi-stage Dockerfile included. Single <code style="font-family:var(--font-mono);font-size:12px;color:#7dd3fc">docker compose up</code> to deploy.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(168,85,247,.12)">📊</div>
+      <h3>Severity Tracking</h3>
+      <p>Critical / High / Medium / Low / Info severity per query. Filter by severity in the library.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(20,184,166,.12)">🔐</div>
+      <h3>Encrypted at Rest</h3>
+      <p>AES-256-GCM on all sensitive fields. scrypt key derivation. Session tokens stored as HMAC hashes.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon" style="background:rgba(14,165,233,.12)">📁</div>
+      <h3>Folder Organization</h3>
+      <p>Hierarchical folders, personal vs team scope. Bulk JSON import for migrating existing libraries.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MITRE tactics preview -->
+<section>
+  <div class="section-label">ATT&CK Coverage</div>
+  <h2>Map detection gaps visually</h2>
+  <p class="section-desc">See at a glance which ATT&CK tactics your query library covers — and where you have blind spots.</p>
+  <div class="mitre-grid">
+    <span class="tactic" style="color:#ef4444;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.07)">TA0001 · Initial Access</span>
+    <span class="tactic" style="color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.07)">TA0002 · Execution</span>
+    <span class="tactic" style="color:#ec4899;border-color:rgba(236,72,153,.3);background:rgba(236,72,153,.07)">TA0003 · Persistence</span>
+    <span class="tactic" style="color:#d946ef;border-color:rgba(217,70,239,.3);background:rgba(217,70,239,.07)">TA0004 · Privilege Escalation</span>
+    <span class="tactic" style="color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07)">TA0005 · Defense Evasion</span>
+    <span class="tactic" style="color:#3b82f6;border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.07)">TA0006 · Credential Access</span>
+    <span class="tactic" style="color:#06b6d4;border-color:rgba(6,182,212,.3);background:rgba(6,182,212,.07)">TA0007 · Discovery</span>
+    <span class="tactic" style="color:#eab308;border-color:rgba(234,179,8,.3);background:rgba(234,179,8,.07)">TA0008 · Lateral Movement</span>
+    <span class="tactic" style="color:#f59e0b;border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.07)">TA0009 · Collection</span>
+    <span class="tactic" style="color:#ef4444;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.07)">TA0010 · Exfiltration</span>
+    <span class="tactic" style="color:#a855f7;border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.07)">TA0011 · Command & Control</span>
+    <span class="tactic" style="color:#dc2626;border-color:rgba(220,38,38,.3);background:rgba(220,38,38,.07)">TA0040 · Impact</span>
+  </div>
+</section>
+
+<!-- Demo section -->
+<section id="demo-section">
+  <div class="section-label">Live Demo</div>
+  <h2>Try it without installing anything</h2>
+  <p class="section-desc">Public demo instance with pre-loaded sample queries. No sign-up required — use the demo login button.</p>
+
+  <div class="demo-notice">
+    <div class="demo-notice-inner">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Demo data resets periodically. Do not store real queries or credentials.
+    </div>
+  </div>
+
+  <div class="cta-banner" style="text-align:left;padding:36px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(14,165,233,.2),rgba(59,130,246,.2));border:1px solid rgba(14,165,233,.3);display:flex;align-items:center;justify-content:center;font-size:22px;">🚀</div>
+      <div>
+        <div style="font-size:16px;font-weight:700;">Public Demo Instance</div>
+        <div style="font-size:13px;color:var(--t3);">Hosted on Render · Resets periodically · HTTPS</div>
+      </div>
+    </div>
+    <p style="color:var(--t3);margin-bottom:24px;font-size:14px;">
+      Click the button below to open the live demo. On the login page, click <strong style="color:var(--t1)">"Demo Login"</strong> to access with a pre-seeded analyst account.
+    </p>
+    <a href="#" id="demo-link" class="btn btn-primary" style="padding:12px 28px;font-size:15px;opacity:.5;cursor:not-allowed;" title="Coming soon — deploy to Render first">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      Open Live Demo
+    </a>
+    <span style="font-size:12px;color:var(--t4);margin-left:12px;">← Deploy to Render first, then update this URL</span>
+  </div>
+</section>
+
+<!-- Deploy section -->
+<section id="deploy">
+  <div class="section-label">Self-Host</div>
+  <h2>Deploy in minutes</h2>
+  <p class="section-desc">Docker Compose or bare Node.js. SQLite included — no external database required.</p>
+
+  <div class="deploy-grid">
+    <div class="deploy-card">
+      <div class="deploy-header">
+        <span class="ico">🐳</span>
+        <h3>Docker Compose</h3>
+        <span class="tag tag-picerl" style="margin-left:auto">Recommended</span>
+      </div>
+      <div class="deploy-body"><pre><span class="cmd-prefix"># </span>Clone and configure
+<span class="cmd-prefix">$ </span><span class="cmd-kw">git</span> clone https://github.com/vinsk0h/KQLab
+<span class="cmd-prefix">$ </span><span class="cmd-kw">cd</span> KQLab
+<span class="cmd-prefix">$ </span><span class="cmd-kw">cp</span> .env.example .env
+
+<span class="cmd-prefix"># </span>Generate secrets (run twice)
+<span class="cmd-prefix">$ </span><span class="cmd-kw">npm</span> run keygen
+
+<span class="cmd-prefix"># </span>Start production instance
+<span class="cmd-prefix">$ </span><span class="cmd-kw">docker</span> compose up <span class="cmd-flag">-d</span>
+<span class="cmd-prefix"># </span>→ http://localhost:3000</pre>
+      </div>
+    </div>
+
+    <div class="deploy-card">
+      <div class="deploy-header">
+        <span class="ico">⚡</span>
+        <h3>Node.js Direct</h3>
+      </div>
+      <div class="deploy-body"><pre><span class="cmd-prefix"># </span>Requirements: Node.js ≥ 18
+<span class="cmd-prefix">$ </span><span class="cmd-kw">git</span> clone https://github.com/vinsk0h/KQLab
+<span class="cmd-prefix">$ </span><span class="cmd-kw">cd</span> KQLab
+<span class="cmd-prefix">$ </span><span class="cmd-kw">npm</span> install
+<span class="cmd-prefix">$ </span><span class="cmd-kw">cp</span> .env.example .env
+
+<span class="cmd-prefix"># </span>Fill .env then start
+<span class="cmd-prefix">$ </span><span class="cmd-kw">npm</span> start
+<span class="cmd-prefix"># </span>→ http://localhost:3000</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section>
+  <div class="cta-banner">
+    <h2>Ready to centralize your KQL library?</h2>
+    <p>Open source, MIT license. No telemetry, no cloud dependencies, no vendor lock-in.</p>
+    <div class="cta-actions">
+      <a href="https://github.com/vinsk0h/KQLab" target="_blank" rel="noopener" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Star on GitHub
+      </a>
+      <a href="#deploy" class="btn btn-outline">Self-Host Guide</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/vinsk0h/KQLab" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/vinsk0h/KQLab/blob/main/README.md" target="_blank" rel="noopener">Docs</a>
+    <a href="https://github.com/vinsk0h/KQLab/issues" target="_blank" rel="noopener">Issues</a>
+    <a href="https://github.com/vinsk0h/KQLab/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+  </div>
+  <div>© 2025 KQLab · Built for SOC teams</div>
+</footer>
+
+</body>
+</html>
