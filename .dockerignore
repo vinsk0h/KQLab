@@ -13,5 +13,6 @@ CLAUDE.md
 *.md
 docs
 assets
-docker-test.ps1
-docker-compose.dev.yml
+docker
+dev
+scripts/docker-test.ps1

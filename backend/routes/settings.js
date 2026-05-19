@@ -3,7 +3,7 @@ const express      = require('express');
 const router       = express.Router();
 const { getDb }    = require('../db/database');
 const { requireAuth }                    = require('../middleware/auth');
-const { sanitize, requireAdmin }         = require('../middleware/utils');
+const { sanitize, requireAdmin, isValidHexColor } = require('../middleware/utils');
 
 router.use(requireAuth);
 
@@ -45,7 +45,7 @@ router.put('/report', requireAdmin, function (req, res) {
     const txn = db.transaction(function () {
       if (company_name        !== undefined) stmt.run('company_name',        sanitize(company_name    || '', 200));
       if (company_subtitle    !== undefined) stmt.run('company_subtitle',    sanitize(company_subtitle || '', 200));
-      if (report_header_color !== undefined) stmt.run('report_header_color', report_header_color || '#e63946');
+      if (report_header_color !== undefined) stmt.run('report_header_color', isValidHexColor(report_header_color) ? report_header_color : '#e63946');
       if (company_logo        !== undefined) stmt.run('company_logo',        company_logo        || '');
       if (report_lang         !== undefined) stmt.run('report_lang',         ['fr','en'].includes(report_lang) ? report_lang : 'fr');
     });

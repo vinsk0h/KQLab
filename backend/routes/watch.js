@@ -3,7 +3,7 @@ var express = require("express");
 var crypto  = require("crypto");
 var { getDb, auditLog } = require("../db/database");
 var { requireAuth }     = require("../middleware/auth");
-var { sanitize, sanitizeUrl } = require("../middleware/utils");
+var { sanitize, sanitizeUrl, requireAdmin } = require("../middleware/utils");
 
 var rateLimit = require("express-rate-limit");
 
@@ -13,11 +13,6 @@ router.use(requireAuth);
 var feedOpsLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false, message: { error: "Too many requests, please wait." } });
 
 var VALID_FEED_TYPES = ["rss", "atom", "rss_auto", "msrc", "json_cisa", "cisa_kev"];
-
-function requireAdmin(req, res, next) {
-  if (req.user.role !== "admin") return res.status(403).json({ error: "Admin only" });
-  next();
-}
 
 // ─── GET /api/watch/summary ───────────────────────────────────────────────
 // P13 — 5 sequential queries collapsed into 2 (scalar subqueries + match rows)
@@ -59,7 +54,8 @@ router.get("/summary", function(req, res) {
       matched_queries: matched_queries
     });
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    console.error('[Watch] GET /summary error:', e);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -95,7 +91,8 @@ router.get("/feed", function(req, res) {
     var rows = db.prepare(sql).all(...params);
     res.json(rows);
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    console.error('[Watch] GET /feed error:', e);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -116,7 +113,8 @@ router.get("/feed/:articleId", function(req, res) {
 
     res.json(Object.assign({}, article, { matches: matches }));
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    console.error('[Watch] GET /feed/:id error:', e);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -127,7 +125,8 @@ router.post("/feed/:articleId/read", function(req, res) {
     db.prepare("UPDATE watch_articles SET is_read = 1 WHERE id = ?").run(req.params.articleId);
     res.json({ ok: true });
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    console.error('[Watch] POST /feed/:id/read error:', e);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -138,7 +137,8 @@ router.post("/feed/:articleId/dismiss", function(req, res) {
     db.prepare("UPDATE watch_articles SET is_dismissed = 1, is_read = 1 WHERE id = ?").run(req.params.articleId);
     res.json({ ok: true });
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    console.error('[Watch] POST /feed/:id/dismiss error:', e);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -198,7 +198,8 @@ router.get("/sources", function(req, res) {
     var rows = db.prepare("SELECT * FROM watch_sources ORDER BY created_at ASC").all();
     res.json(rows.map(function(r) { return Object.assign({}, r, { enabled: r.enabled === 1 }); }));
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    console.error('[Watch] GET /sources error:', e);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 

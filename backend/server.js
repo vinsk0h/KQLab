@@ -23,6 +23,7 @@ const watchRoutes          = require("./routes/watch");
 const app  = express();
 const PORT = process.env.PORT || 3000;
 const isDev = process.env.NODE_ENV !== "production";
+const isHttpsOrigin = (process.env.ORIGIN || "").startsWith("https://");
 
 // Trust the first proxy hop so req.ip reflects the real client IP
 app.set("trust proxy", 1);
@@ -40,7 +41,7 @@ app.use(helmet({
       workerSrc:  ["'self'", "blob:", "https://cdn.jsdelivr.net"],  // blob: + CDN required by Monaco workers
       objectSrc:  ["'none'"],
       frameSrc:   ["'none'"],
-      upgradeInsecureRequests: isDev ? null : [],
+      upgradeInsecureRequests: isHttpsOrigin ? [] : null,
     },
   },
   crossOriginEmbedderPolicy: false,

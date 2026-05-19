@@ -5,6 +5,7 @@ node_modules/
 .env
 .env.local
 .env.*.local
+.env.test
 
 # Database files
 backend/db/*.db
@@ -40,7 +41,8 @@ pids/
 CLAUDE.md
 PUBLISHING_GUIDE.md
 
-# Dev / test environment — not for production repo
-.env.test
-docker-compose.dev.yml
-docker-test.ps1
+# Dev / test environment — all grouped in dev/
+dev/
+
+# Generated artifacts — never commit outputs
+scripts/i18n-audit-report.txt

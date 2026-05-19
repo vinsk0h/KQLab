@@ -1600,7 +1600,33 @@ function buildReport(inv) {
       h += '<div class="rpt-md-body">' + RichEditor.mdToHtml(inv.conclusion) + '</div>';
       h += '</div>';
     }
-    if (!inv.description && !inv.conclusion) {
+    if (findings.length > 0) {
+      h += '<div class="rpt-section" style="margin-top:16px">';
+      h += '<div class="rpt-preview-label" style="margin-bottom:10px">' + T('report.findings') + ' (' + findings.length + ')</div>';
+      findings.forEach(function(f) {
+        var fSevC = SEV_C[(f.severity || 'medium').toLowerCase()] || '#6b7280';
+        var fShots = [];
+        try { fShots = JSON.parse(f.screenshots || '[]'); } catch(e) {}
+        h += '<div style="margin-bottom:10px;border:1px solid var(--bd);border-radius:7px;overflow:hidden">';
+        h += '<div style="background:' + fSevC + '1a;padding:7px 12px 7px 16px;border-left:4px solid ' + fSevC + '">';
+        h += '<span style="color:' + fSevC + ';font-weight:700;font-size:11px;text-transform:uppercase">' + esc(f.event_type || 'finding') + '</span>';
+        h += '<span style="background:' + fSevC + ';color:#fff;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;margin-left:8px">' + (f.severity || 'medium').toUpperCase() + '</span>';
+        h += '</div>';
+        h += '<div style="padding:10px 14px">';
+        h += '<div style="font-weight:700;font-size:13px;margin-bottom:6px;color:var(--t1)">' + esc(f.title || '') + '</div>';
+        if (f.content) h += '<div class="rpt-md-body" style="font-size:12.5px">' + RichEditor.mdToHtml(f.content) + '</div>';
+        fShots.filter(function(s) { return s && s.url; }).forEach(function(s) {
+          h += '<div style="margin:8px 0;text-align:center">';
+          h += '<img src="' + s.url + '" alt="' + esc(s.caption || '') + '" style="max-width:100%;border-radius:4px;border:1px solid var(--bd);display:block;margin:0 auto">';
+          if (s.caption) h += '<div style="font-size:11px;color:var(--t4);margin-top:3px;font-style:italic">' + esc(s.caption) + '</div>';
+          h += '</div>';
+        });
+        h += '</div>';
+        h += '</div>';
+      });
+      h += '</div>';
+    }
+    if (!inv.description && !inv.conclusion && !findings.length) {
       h += '<div class="rpt-preview-label" style="padding:20px 0">' + T('report.complete_overview') + '</div>';
     }
   } else {

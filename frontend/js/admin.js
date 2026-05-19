@@ -1709,7 +1709,7 @@ var AdminCharts = (function() {
   var _loading   = false;
   var _queue     = [];
 
-  var LOCAL = '/js/chart.umd.min.js';
+  var LOCAL = '/js/vendor/chart.umd.min.js';
   var CDN   = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js';
 
   function _load(cb) {

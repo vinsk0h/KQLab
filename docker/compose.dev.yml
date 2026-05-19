@@ -1,0 +1,36 @@
+services:
+  kqlab:
+    build:
+      context: ..
+      target: dev
+    image: kqlab:dev
+    container_name: kqlab-dev
+    restart: "no"
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    env_file:
+      - ../.env.test
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ../backend:/app/backend
+      - ../frontend:/app/frontend
+      - ../scripts:/app/scripts
+      - kqlab-dev-db:/app/backend/db
+    networks:
+      - kqlab-dev-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+networks:
+  kqlab-dev-net:
+    driver: bridge
+
+volumes:
+  kqlab-dev-db:
+    name: kqlab-dev-db

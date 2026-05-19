@@ -2373,22 +2373,40 @@ function renderRepoList(){
   return h;
 }
 
+function parseGithubUrl(url) {
+  if (!url) return null;
+  var s = url.trim().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/^github\.com\//, '');
+  var parts = s.split('/').filter(Boolean);
+  if (parts.length < 2) return null;
+  var owner = parts[0];
+  var repo = parts[1].replace(/\.git$/, '');
+  if (!owner || !repo) return null;
+  var branch = (parts[2] === 'tree' && parts[3]) ? parts[3] : null;
+  return { owner: owner, repo: repo, name: repo, branch: branch };
+}
+
 function renderRepoForm(){
   var e=S.repoEdit||{};
+  var showAdv=!!(e.path_filter||(e.branch&&e.branch!=='main')||e.target_folder_id);
   var h='<div style="padding:22px;max-height:70vh;overflow-y:auto">';
-  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
-  h+='<div style="grid-column:1/-1"><label class="lbl">'+T('repo_name_lbl')+'</label><input id="rp-name" value="'+esc(e.name||'')+'" placeholder="My Community Repo"></div>';
-  h+='<div><label class="lbl">'+T('github_owner')+'</label><input id="rp-owner" value="'+esc(e.github_owner||'')+'" placeholder="Azure"></div>';
-  h+='<div><label class="lbl">'+T('github_repo')+'</label><input id="rp-repo" value="'+esc(e.github_repo||'')+'" placeholder="Azure-Sentinel"></div>';
+  h+='<div style="margin-bottom:16px">';
+  h+='<label class="lbl">GitHub Repository URL</label>';
+  h+='<input id="rp-url" value="'+esc(e.url||'')+'" placeholder="https://github.com/owner/repo" style="font-family:monospace;font-size:13px">';
+  h+='<div id="rp-url-preview" style="margin-top:5px;font-size:12px;min-height:16px"></div>';
+  h+='</div>';
+  h+='<details'+(showAdv?' open':'')+' style="margin-bottom:4px">';
+  h+='<summary style="cursor:pointer;font-size:11px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.06em;user-select:none;padding:2px 0">Advanced</summary>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px">';
   h+='<div><label class="lbl">'+T('repo_branch')+'</label><input id="rp-branch" value="'+esc(e.branch||'main')+'" placeholder="main"></div>';
   h+='<div><label class="lbl">'+T('path_filter')+' <span style="font-weight:400;text-transform:none;color:var(--t5)">(optional)</span></label><input id="rp-pf" value="'+esc(e.path_filter||'')+'" placeholder="Hunting Queries"></div>';
   h+='</div>';
-  h+='<div style="margin-bottom:14px"><label class="lbl">'+T('file_format')+'</label><div style="display:flex;gap:6px">';
+  h+='<div style="margin-top:14px"><label class="lbl">'+T('file_format')+'</label><div style="display:flex;gap:6px">';
   ['auto','yaml','md','kql'].forEach(function(f){var on=(e.file_format||'auto')===f;var fC={auto:'var(--t3)',yaml:'#3b82f6',md:'#22c55e',kql:'#f97316'}[f];h+='<button class="tchip" data-rp-fmt="'+f+'" style="'+(on?'background:'+fC+'18;color:'+fC+';border-color:'+fC+'40':'')+'">'+f.toUpperCase()+'</button>';});
   h+='</div></div>';
-  h+='<div style="margin-bottom:4px"><label class="lbl">'+T('repo_target_folder')+'</label><select id="rp-folder" style="width:100%"><option value="">'+T('repo_none_folder')+'</option>';
+  h+='<div style="margin-top:14px"><label class="lbl">'+T('repo_target_folder')+'</label><select id="rp-folder" style="width:100%"><option value="">'+T('repo_none_folder')+'</option>';
   S.folders.forEach(function(f){h+='<option value="'+f.id+'"'+(e.target_folder_id===f.id?' selected':'')+'>'+esc(f.icon)+' '+esc(f.name)+'</option>';});
   h+='</select></div>';
+  h+='</details>';
   h+='</div>';
   h+='<div style="padding:14px 22px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px">';
   h+='<button id="btn-repo-cancel">'+T('cancel')+'</button>';
@@ -2460,6 +2478,7 @@ function bindEvents(){
     try{
       await Auth.changePassword(cur,nw);
       S.mustChangePw=false;S.showChangePw=false;
+      render();
       showToast(T('pw_updated'));
     }catch(e){if(errEl)errEl.textContent=e.message;}
   });
@@ -2692,16 +2711,31 @@ function bindEvents(){
   elOn("btn-repos",openRepoModal);
   elOn("cl-repo",function(){S.showRepoModal=false;S.repoShowForm=false;render();});
   elOn("ov-repo",function(e){if(e.target.id==="ov-repo"){S.showRepoModal=false;S.repoShowForm=false;render();}});
-  elOn("btn-repo-new",function(){S.repoEdit={file_format:'auto'};S.repoShowForm=true;render();});
+  elOn("btn-repo-new",function(){S.repoEdit={file_format:'auto',url:''};S.repoShowForm=true;render();});
   elOn("btn-repo-cancel",function(){S.repoShowForm=false;S.repoEdit=null;render();});
+  (function(){
+    var urlInput=document.getElementById("rp-url");
+    if(!urlInput)return;
+    function updatePreview(){
+      var prev=document.getElementById("rp-url-preview");
+      if(!prev)return;
+      var parsed=parseGithubUrl(urlInput.value);
+      if(parsed){
+        prev.innerHTML='<span style="color:#22c55e">✓</span> <strong>'+esc(parsed.owner)+'/'+esc(parsed.repo)+'</strong>'+(parsed.branch?' &middot; branch: '+esc(parsed.branch):'');
+      } else if(urlInput.value.trim()){
+        prev.innerHTML='<span style="color:#ef4444">Invalid GitHub URL</span>';
+      } else {
+        prev.textContent='';
+      }
+    }
+    urlInput.addEventListener("input",updatePreview);
+    updatePreview();
+  })();
   document.querySelectorAll("[data-rp-fmt]").forEach(function(x){x.addEventListener("click",function(){
     if(S.repoEdit){
-      // Preserve current field values before re-render so they aren't wiped
-      var _n=document.getElementById("rp-name"),_o=document.getElementById("rp-owner"),_r=document.getElementById("rp-repo");
-      var _b=document.getElementById("rp-branch"),_pf=document.getElementById("rp-pf"),_fl=document.getElementById("rp-folder");
-      if(_n)S.repoEdit.name=_n.value;
-      if(_o)S.repoEdit.github_owner=_o.value;
-      if(_r)S.repoEdit.github_repo=_r.value;
+      var _u=document.getElementById("rp-url"),_b=document.getElementById("rp-branch");
+      var _pf=document.getElementById("rp-pf"),_fl=document.getElementById("rp-folder");
+      if(_u)S.repoEdit.url=_u.value;
       if(_b)S.repoEdit.branch=_b.value;
       if(_pf)S.repoEdit.path_filter=_pf.value;
       if(_fl)S.repoEdit.target_folder_id=_fl.value||null;
@@ -2710,14 +2744,17 @@ function bindEvents(){
     render();
   });});
   elOn("btn-repo-save",async function(){
-    var name=(document.getElementById("rp-name")||{value:""}).value.trim();
-    var owner=(document.getElementById("rp-owner")||{value:""}).value.trim();
-    var repo=(document.getElementById("rp-repo")||{value:""}).value.trim();
-    var branch=(document.getElementById("rp-branch")||{value:"main"}).value.trim()||"main";
+    var urlVal=(document.getElementById("rp-url")||{value:""}).value.trim();
+    var parsed=parseGithubUrl(urlVal);
+    if(!parsed){showToast('Invalid GitHub URL — expected https://github.com/owner/repo');return;}
+    var name=parsed.name;
+    var owner=parsed.owner;
+    var repo=parsed.repo;
+    var branchInput=(document.getElementById("rp-branch")||{value:""}).value.trim();
+    var branch=branchInput||parsed.branch||"main";
     var pf=(document.getElementById("rp-pf")||{value:""}).value.trim();
     var folder=(document.getElementById("rp-folder")||{value:""}).value||null;
     var fmt=(S.repoEdit&&S.repoEdit.file_format)||"auto";
-    if(!name||!owner||!repo){showToast(T('repo_fields_required'));return;}
     try{
       var created=await API.post('/repos',{name:name,github_owner:owner,github_repo:repo,branch:branch,path_filter:pf,file_format:fmt,target_folder_id:folder});
       S.repoSources.push(created);S.repoShowForm=false;S.repoEdit=null;render();

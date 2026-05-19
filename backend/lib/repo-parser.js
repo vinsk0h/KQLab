@@ -56,19 +56,61 @@ function ghHeaders() {
   return h;
 }
 
+// Rate limit state — shared across all requests in a sync run
+var _rl = { remaining: 60, reset: 0, warned: false };
+
+function _updateRateLimit(res) {
+  var rem = parseInt(res.headers.get("X-RateLimit-Remaining") || "-1");
+  var rst = parseInt(res.headers.get("X-RateLimit-Reset") || "0") * 1000;
+  if (rem >= 0) _rl.remaining = rem;
+  if (rst > 0)  _rl.reset = rst;
+}
+
+async function _waitForRateLimit() {
+  if (_rl.remaining > 5) return;
+  var waitMs = Math.max(_rl.reset - Date.now(), 0) + 2000;
+  if (!_rl.warned) {
+    console.warn("[REPO_PARSER] GitHub rate limit low (" + _rl.remaining + " left). Waiting " + Math.ceil(waitMs / 1000) + "s …");
+    _rl.warned = true;
+  }
+  await new Promise(function(r) { setTimeout(r, waitMs); });
+  _rl.remaining = 60;
+  _rl.warned = false;
+}
+
+async function ghFetch(url) {
+  await _waitForRateLimit();
+  var res = await fetch(url, { headers: ghHeaders() });
+  _updateRateLimit(res);
+
+  // Rate-limited: wait and retry once
+  if (res.status === 429 || res.status === 403) {
+    var retryAfter = parseInt(res.headers.get("Retry-After") || "0") * 1000;
+    var waitMs = retryAfter || Math.max(_rl.reset - Date.now(), 0) + 2000;
+    console.warn("[REPO_PARSER] Rate-limited (" + res.status + "). Waiting " + Math.ceil(waitMs / 1000) + "s …");
+    await new Promise(function(r) { setTimeout(r, waitMs); });
+    _rl.remaining = 60;
+    res = await fetch(url, { headers: ghHeaders() });
+    _updateRateLimit(res);
+  }
+  return res;
+}
+
 async function listRepoFiles(owner, repo, branch, pathFilter, fileFormat) {
   var debug = process.env.REPO_PARSER_DEBUG === 'true';
+  _rl = { remaining: 60, reset: 0, warned: false }; // reset per sync run
+
   var url = "https://api.github.com/repos/" + owner + "/" + repo + "/git/trees/" + branch + "?recursive=1";
   if (debug) console.log("[REPO_PARSER] Fetching tree:", url);
-  var res = await fetch(url, { headers: ghHeaders() });
+
+  var res = await ghFetch(url);
   if (!res.ok) throw new Error("GitHub tree fetch failed: " + res.status + " " + url);
   var data = await res.json();
   if (!data.tree) throw new Error("No tree in response");
 
   if (data.truncated) {
-    console.warn("[REPO_PARSER] GitHub tree response truncated for " + owner + "/" + repo +
-      " (repo has >1000 files or tree exceeds size limit). Some files may be missing. " +
-      "Use path_filter to narrow the scope.");
+    console.warn("[REPO_PARSER] GitHub tree truncated for " + owner + "/" + repo +
+      ". Use path_filter to narrow scope, or add GITHUB_TOKEN for higher limits.");
   }
 
   var exts = fileFormat === "yaml" ? [".yaml", ".yml"]
@@ -81,7 +123,6 @@ async function listRepoFiles(owner, repo, branch, pathFilter, fileFormat) {
     var p = item.path.toLowerCase();
     var hasExt = exts.some(function(e) { return p.endsWith(e); });
     if (!hasExt) return false;
-    // pathFilter: case-insensitive substring match
     if (pathFilter && item.path.toLowerCase().indexOf(pathFilter.toLowerCase()) < 0) return false;
     // Azure-Sentinel: ignore Detections/, Playbooks/, Workbooks/
     if (owner === "Azure" && repo === "Azure-Sentinel") {
@@ -90,13 +131,23 @@ async function listRepoFiles(owner, repo, branch, pathFilter, fileFormat) {
     return true;
   });
 
-  if (debug) console.log("[REPO_PARSER] listRepoFiles:", filtered.length, "files matched (truncated:", !!data.truncated, ")");
+  if (debug) console.log("[REPO_PARSER] listRepoFiles:", filtered.length, "files (truncated:", !!data.truncated, ")");
   return filtered;
 }
 
-async function fetchFileContent(owner, repo, filePath, branch) {
+async function fetchFileContent(owner, repo, filePath, branch, sha) {
+  // Preferred: raw content via git blobs API (no 1 MB limit, not base64-paginated)
+  if (sha) {
+    var blobUrl = "https://api.github.com/repos/" + owner + "/" + repo + "/git/blobs/" + sha;
+    var bres = await ghFetch(blobUrl);
+    if (bres.ok) {
+      var bdata = await bres.json();
+      if (bdata.content) return Buffer.from(bdata.content, "base64").toString("utf8");
+    }
+  }
+  // Fallback: contents API (max ~1 MB)
   var url = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/" + encodeURIComponent(filePath) + "?ref=" + branch;
-  var res = await fetch(url, { headers: ghHeaders() });
+  var res = await ghFetch(url);
   if (!res.ok) throw new Error("GitHub content fetch failed: " + res.status);
   var data = await res.json();
   if (!data.content) throw new Error("No content in response");
@@ -402,6 +453,21 @@ function extractMitreEnhanced(text) {
 
 // ── Parser: Markdown — supports multiple KQL blocks per file ──────────────────
 
+// Infer environment from the heading immediately before a code block.
+// Catches patterns like "## Sentinel", "## Defender XDR", "## Advanced Hunting".
+// Returns "Sentinel", "Defender", or null (no strong signal).
+function _envFromNearestHeading(content, blockIndex) {
+  var before = content.slice(0, blockIndex);
+  var re = /^#{1,4}[ \t]+(.+)$/gm;
+  var m, lastTitle = null;
+  while ((m = re.exec(before)) !== null) lastTitle = m[1].trim();
+  if (!lastTitle) return null;
+  var t = lastTitle.toLowerCase();
+  if (/\b(sentinel|azure[\s-]*sentinel|microsoft[\s-]*sentinel)\b/.test(t)) return "Sentinel";
+  if (/\b(defender|xdr|mde|mdatp|advanced[\s-]*hunting|microsoft[\s-]*defender)\b/.test(t)) return "Defender";
+  return null;
+}
+
 // Find the best title to use for a KQL block at `blockIndex`.
 // Prefers H1 when the immediately-preceding heading is a generic section label.
 function _bestTitleBefore(content, blockIndex) {
@@ -465,19 +531,28 @@ function parseMdFile(content, filePath, extras) {
 
       var heading = _bestTitleBefore(content, match.index);
       var blockTitle = sanitizeStr(heading || baseName, 200) || baseName;
-      // Disambiguate duplicate titles
+
+      // Per-block env from nearest section heading ("## Sentinel" / "## Defender XDR")
+      var headingEnv = _envFromNearestHeading(content, match.index);
+
+      // Disambiguate duplicate titles — env suffix when available (multi-env files)
       if (results.some(function(r) { return r.title === blockTitle; })) {
-        blockTitle = sanitizeStr(blockTitle + " " + (results.length + 1), 200);
+        blockTitle = sanitizeStr(blockTitle + (headingEnv ? " (" + headingEnv + ")" : " " + (results.length + 1)), 200);
       }
 
       // Description: text in the section above this block, or file-level fallback
       var blockDesc = _descBetweenHeadingAndBlock(content, match.index) || fileDesc;
 
-      var environment = envFromPath(filePath);
-      if (environment === "Both") environment = detectEnvironment(kql, extras) || "Both";
+      var environment;
+      if (headingEnv) {
+        environment = headingEnv;
+      } else {
+        environment = envFromPath(filePath);
+        if (environment === "Both") environment = detectEnvironment(kql, extras) || "Both";
+      }
 
       if (debug) {
-        console.log("[REPO_PARSER] MD kql-block:", filePath, "->", blockTitle, "(" + kql.length + " chars)");
+        console.log("[REPO_PARSER] MD kql-block:", filePath, "->", blockTitle, "(" + kql.length + " chars)", headingEnv ? "[env:" + headingEnv + "]" : "");
         console.log("[REPO_PARSER]   Desc (" + blockDesc.length + " chars):", blockDesc.slice(0, 80));
         console.log("[REPO_PARSER]   MITRE:", mitre.join(", ") || "none");
         console.log("[REPO_PARSER]   Tags:", baseTags.join(", ") || "none");
@@ -501,16 +576,24 @@ function parseMdFile(content, filePath, extras) {
 
         var heading = _bestTitleBefore(content, match.index);
         var blockTitle = sanitizeStr(heading || baseName, 200) || baseName;
+
+        var headingEnv = _envFromNearestHeading(content, match.index);
+
         if (results.some(function(r) { return r.title === blockTitle; })) {
-          blockTitle = sanitizeStr(blockTitle + " " + (results.length + 1), 200);
+          blockTitle = sanitizeStr(blockTitle + (headingEnv ? " (" + headingEnv + ")" : " " + (results.length + 1)), 200);
         }
 
         var blockDesc = _descBetweenHeadingAndBlock(content, match.index) || fileDesc;
 
-        var environment = envFromPath(filePath);
-        if (environment === "Both") environment = detectEnvironment(kql, extras) || "Both";
+        var environment;
+        if (headingEnv) {
+          environment = headingEnv;
+        } else {
+          environment = envFromPath(filePath);
+          if (environment === "Both") environment = detectEnvironment(kql, extras) || "Both";
+        }
 
-        if (debug) console.log("[REPO_PARSER] MD generic-block:", filePath, "->", blockTitle, "(" + kql.length + " chars)");
+        if (debug) console.log("[REPO_PARSER] MD generic-block:", filePath, "->", blockTitle, "(" + kql.length + " chars)", headingEnv ? "[env:" + headingEnv + "]" : "");
         var blockRefs = mergeRefs(fileRefs, extractReferencesFromKqlComments(kql));
         results.push({ title: blockTitle, description: blockDesc, kql, mitre, picerl, tags: baseTags, environment, severity, language: "KQL", references: blockRefs });
       }
@@ -644,8 +727,8 @@ async function syncRepo(repoSource, db, teamId) {
     return stats;
   }
 
-  // Cap at 500 files per sync
-  if (files.length > 500) files = files.slice(0, 500);
+  // Cap at 2000 files per sync (Bert-JanP has ~1000+ .md files)
+  if (files.length > 2000) files = files.slice(0, 2000);
   stats.total_files = files.length;
 
   var folderId  = repoSource.target_folder_id || null;
@@ -673,7 +756,7 @@ async function syncRepo(repoSource, db, teamId) {
       }
 
       // Fetch + parse
-      var content = await fetchFileContent(repoSource.github_owner, repoSource.github_repo, file.path, repoSource.branch);
+      var content = await fetchFileContent(repoSource.github_owner, repoSource.github_repo, file.path, repoSource.branch, file.sha);
       var parsedArr = parseFile(content, file.path, extras);
       if (!parsedArr || parsedArr.length === 0) { stats.skipped++; continue; }
 

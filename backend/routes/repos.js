@@ -2,7 +2,7 @@ const express    = require("express");
 const crypto     = require("crypto");
 const { getDb, auditLog } = require("../db/database");
 const { requireAuth }     = require("../middleware/auth");
-const { sanitize }        = require("../middleware/utils");
+const { sanitize, requireAdmin } = require("../middleware/utils");
 const { syncRepo }        = require("../lib/repo-parser");
 const { recalculateCompatibility } = require("./fingerprint");
 
@@ -10,11 +10,6 @@ const router = express.Router();
 router.use(requireAuth);
 
 const VALID_FORMATS = ["yaml", "md", "kql", "auto"];
-
-function requireAdmin(req, res, next) {
-  if (req.user.role !== "admin") return res.status(403).json({ error: "Admin only" });
-  next();
-}
 
 function recalcTeamEnvs(db, teamId) {
   var users = db.prepare(
@@ -137,7 +132,8 @@ router.post("/purge/:id", requireAdmin, function(req, res) {
     auditLog(req.user.id, "REPO_PURGE", "repo_source", req.params.id, { name: src.name, deleted: deleted }, req.ip);
     res.json({ ok: true, deleted: deleted });
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    console.error('[Repos] POST /purge/:id error:', e);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -166,7 +162,8 @@ router.post("/purge-imported", requireAdmin, function(req, res) {
     auditLog(req.user.id, "REPO_PURGE_IMPORTED", "queries", null, { deleted: deleted }, req.ip);
     res.json({ ok: true, deleted: deleted });
   } catch(e) {
-    res.status(500).json({ error: e.message });
+    console.error('[Repos] POST /purge-imported error:', e);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 

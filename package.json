@@ -8,9 +8,17 @@
     "dev": "node --watch backend/server.js",
     "keygen": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
     "sync-repos": "node scripts/sync-repos.js",
-    "release:patch": "npm version patch",
-    "release:minor": "npm version minor",
-    "release:major": "npm version major"
+    "reset-admin": "node scripts/reset-admin.js",
+    "docker:prod": "docker compose up -d",
+    "docker:dev": "docker compose -f docker/compose.dev.yml up",
+    "docker:test": "pwsh scripts/docker-test.ps1",
+    "docker:test:dev": "pwsh scripts/docker-test.ps1 -Mode dev",
+    "commit": "node dev/commit.js",
+    "release": "node dev/release.js",
+    "release:patch": "npm version patch --message \"chore(release): v%s\"",
+    "release:minor": "npm version minor --message \"chore(release): v%s\"",
+    "release:major": "npm version major --message \"chore(release): v%s\"",
+    "version": "git add CHANGELOG.md"
   },
   "dependencies": {
     "better-sqlite3": "^11.6.0",
@@ -27,5 +35,8 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "puppeteer-core": "^25.0.2"
+  }
 }

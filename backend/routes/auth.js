@@ -31,7 +31,7 @@ function setCookie(res, token, ttlHours) {
   res.cookie("kqlab_session", token, {
     httpOnly: true,
     sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
+    secure: (process.env.ORIGIN || "").startsWith("https://"),
     maxAge: ttlHours * 60 * 60 * 1000,
     path: "/",
   });

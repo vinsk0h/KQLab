@@ -817,12 +817,10 @@ function renderFinding(doc, finding, accent, lang) {
      .text(safe(finding.title) || rs('no_title', lang), ML, doc.y, { width: W });
   doc.moveDown(0.3);
 
-  // Contenu / description
+  // Contenu / description — rendered as Markdown blocks (headings, bullets, code)
   const desc = safe(finding.description || finding.content || '');
   if (desc) {
-    doc.font('Helvetica').fontSize(9.5).fillColor(C.text, 1)
-       .text(desc, ML, doc.y, { width: W, lineGap: 2 });
-    doc.moveDown(0.4);
+    renderMd(doc, desc, accent);
   }
 
   // Blocs de code associés
@@ -870,9 +868,10 @@ function parseMarkdownBlocks(md) {
     if (line.trim() === '---')   { blocks.push({ type: 'hr' }); i++; continue; }
     if (line.match(/^[-*] /))   { blocks.push({ type: 'bullet', content: line.slice(2).trim() }); i++; continue; }
     if (line.trim() === '')      { blocks.push({ type: 'spacer' }); i++; continue; }
-    const text = line.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1')
-                     .replace(/`([^`]+)`/g, '$1').trim();
-    if (text) blocks.push({ type: 'paragraph', content: text });
+    const raw = line.trim();
+    const text = raw.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1')
+                    .replace(/`([^`]+)`/g, '$1');
+    if (text) blocks.push({ type: 'paragraph', content: text, raw: raw });
     i++;
   }
   return blocks;
@@ -1091,16 +1090,32 @@ function _docxIoCTable(iocs, lang) {
   });
 }
 
+// Split text into DOCX TextRun array, converting **bold**, *italic*, `code` inline markers
+function _inlineRuns(text, baseOpts) {
+  const runs = [];
+  const re = /(\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`)/g;
+  let last = 0, m;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) runs.push(new TextRun(Object.assign({ text: text.slice(last, m.index) }, baseOpts)));
+    if (m[0].startsWith('**'))     runs.push(new TextRun(Object.assign({}, baseOpts, { text: m[2], bold: true })));
+    else if (m[0].startsWith('*')) runs.push(new TextRun(Object.assign({}, baseOpts, { text: m[3], italics: true })));
+    else                           runs.push(new TextRun(Object.assign({}, baseOpts, { text: m[4], font: 'Courier New' })));
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) runs.push(new TextRun(Object.assign({ text: text.slice(last) }, baseOpts)));
+  return runs.length ? runs : [new TextRun(Object.assign({ text: safe(text) }, baseOpts))];
+}
+
 function _blockToDocx(block, accentHex) {
   switch (block.type) {
     case 'paragraph':
-      return [new Paragraph({ children: [new TextRun({ text: block.content, size: 22 })], spacing: { after: 120 } })];
+      return [new Paragraph({ children: _inlineRuns(block.raw || block.content, { size: 22 }), spacing: { after: 120 } })];
     case 'h2':
       return [new Paragraph({ children: [new TextRun({ text: block.content, bold: true, size: 28, color: accentHex })], spacing: { before: 240, after: 100 } })];
     case 'h3':
       return [new Paragraph({ children: [new TextRun({ text: block.content, bold: true, size: 24 })], spacing: { before: 180, after: 80 } })];
     case 'bullet':
-      return [new Paragraph({ children: [new TextRun({ text: `•  ${block.content}`, size: 22 })], indent: { left: 360 }, spacing: { after: 60 } })];
+      return [new Paragraph({ children: [new TextRun({ text: '•  ', size: 22 }), ..._inlineRuns(block.content, { size: 22 })], indent: { left: 360 }, spacing: { after: 60 } })];
     case 'code': {
       const codeLines = safe(block.content).split('\n');
       return [
@@ -1156,8 +1171,19 @@ function _docxFinding(finding, accentHex, lang) {
 
   const desc = safe(finding.description || finding.content);
   if (desc) {
-    blocks.push(new Paragraph({ children: [new TextRun({ text: desc, size: 22 })], spacing: { after: 120 } }));
+    parseMarkdownBlocks(desc).forEach(b => blocks.push(..._blockToDocx(b, accentHex)));
   }
+
+  let shots = [];
+  try { shots = JSON.parse(safe(finding.screenshots) || '[]'); } catch(e) {}
+  shots.filter(s => s && s.caption).forEach(s => {
+    blocks.push(new Paragraph({
+      children: [new TextRun({ text: `📷  ${safe(s.caption)}`, size: 18, color: '6B7280', italics: true })],
+      spacing: { before: 60, after: 60 },
+      border: { left: { style: BorderStyle.SINGLE, size: 6, color: 'E5E7EB' } },
+      indent: { left: 200 },
+    }));
+  });
 
   let cbs = [];
   try { cbs = JSON.parse(safe(finding.code_blocks) || '[]'); } catch(e) {}
@@ -1387,29 +1413,38 @@ function generateHTML(investigation, findings, iocs, analyst, settings, lang) {
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // Block-based MD→HTML using the shared parseMd() — avoids \n corruption inside <pre>
+  // Inline Markdown → HTML: bold, italic, code — safe to call after esc() since * and ` are not HTML-escaped
+  function inlineHtml(text) {
+    return esc(text)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;font-family:\'Courier New\',monospace;font-size:13px">$1</code>');
+  }
+
+  // Own block+inline parser — does NOT strip inline markers (unlike parseMd which targets PDF)
   function mdToHtml(md) {
     if (!md) return '';
-    return parseMd(md).map(function(block) {
-      switch (block.t) {
-        case 'p':
-          return `<p style="margin:0 0 14px;color:#374151;line-height:1.75">${esc(block.content)}</p>`;
-        case 'h2':
-          return `<h3 style="font-size:17px;font-weight:700;margin:24px 0 10px;color:#111827;padding-left:10px;border-left:3px solid ${accent}">${esc(block.content)}</h3>`;
-        case 'h3':
-          return `<h4 style="font-size:15px;font-weight:600;margin:18px 0 8px;color:#374151">${esc(block.content)}</h4>`;
-        case 'li':
-          return `<div style="margin:5px 0 5px 18px;color:#374151;line-height:1.6">• ${esc(block.content)}</div>`;
-        case 'code':
-          return `<div style="margin:14px 0"><div style="background:#161b22;color:#58a6ff;padding:5px 14px;border-radius:5px 5px 0 0;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.5px">${esc((block.lang || 'code').toUpperCase())}</div><pre style="background:#0d1117;color:#e6edf3;padding:14px 16px;margin:0;border-radius:0 0 5px 5px;overflow-x:auto;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.6;white-space:pre"><code>${esc(block.content)}</code></pre></div>`;
-        case 'hr':
-          return '<hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0">';
-        case 'br':
-          return '<div style="height:6px"></div>';
-        default:
-          return '';
+    var lines = md.split('\n');
+    var html = '', i = 0;
+    while (i < lines.length) {
+      var l = lines[i];
+      if (l.startsWith('```')) {
+        var lang2 = l.slice(3).trim() || 'code';
+        var code2 = [];
+        i++;
+        while (i < lines.length && !lines[i].startsWith('```')) { code2.push(lines[i]); i++; }
+        html += '<div style="margin:14px 0"><div style="background:#161b22;color:#58a6ff;padding:5px 14px;border-radius:5px 5px 0 0;font-family:\'Courier New\',monospace;font-size:11px;font-weight:700;letter-spacing:.5px">' + esc((lang2 || 'code').toUpperCase()) + '</div><pre style="background:#0d1117;color:#e6edf3;padding:14px 16px;margin:0;border-radius:0 0 5px 5px;overflow-x:auto;font-family:\'Courier New\',monospace;font-size:12.5px;line-height:1.6;white-space:pre"><code>' + esc(code2.join('\n')) + '</code></pre></div>';
+        i++; continue;
       }
-    }).join('');
+      if (l.startsWith('## '))  { html += '<h3 style="font-size:17px;font-weight:700;margin:24px 0 10px;color:#111827;padding-left:10px;border-left:3px solid ' + accent + '">' + inlineHtml(l.slice(3).trim()) + '</h3>'; i++; continue; }
+      if (l.startsWith('### ')) { html += '<h4 style="font-size:15px;font-weight:600;margin:18px 0 8px;color:#374151">' + inlineHtml(l.slice(4).trim()) + '</h4>'; i++; continue; }
+      if (l.trim() === '---')   { html += '<hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0">'; i++; continue; }
+      if (l.match(/^[-*] /))   { html += '<div style="margin:5px 0 5px 18px;color:#374151;line-height:1.6">• ' + inlineHtml(l.slice(2).trim()) + '</div>'; i++; continue; }
+      if (l.trim() === '')      { html += '<div style="height:6px"></div>'; i++; continue; }
+      html += '<p style="margin:0 0 14px;color:#374151;line-height:1.75">' + inlineHtml(l.trim()) + '</p>';
+      i++;
+    }
+    return html;
   }
 
   function sevBadgeHtml(sev) {
@@ -1489,6 +1524,15 @@ function generateHTML(investigation, findings, iocs, analyst, settings, lang) {
           <pre style="background:#0d1117;color:#e6edf3;padding:14px 16px;margin:0;border-radius:0 0 5px 5px;overflow-x:auto;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.6;white-space:pre"><code>${esc(cb.content)}</code></pre>
         </div>`;
       }).join('');
+      let shots = [];
+      try { shots = JSON.parse(safe(f.screenshots) || '[]'); } catch(e) {}
+      const shotsHtml = shots.filter(function(s) { return s && s.url; }).map(function(s) {
+        return `<div style="margin:12px 0;text-align:center">
+          <img src="${s.url}" alt="${esc(s.caption || '')}" style="max-width:100%;border-radius:5px;border:1px solid #e5e7eb;display:block;margin:0 auto">
+          ${s.caption ? `<p style="margin:5px 0 0;font-size:12px;color:#6b7280;font-style:italic">${esc(s.caption)}</p>` : ''}
+        </div>`;
+      }).join('');
+      const contentHtml = (f.description || f.content) ? mdToHtml(f.description || f.content) : '';
       return `<div style="margin-bottom:14px;border:1px solid #e5e7eb;border-radius:7px;overflow:hidden">
         <div style="background:${bgL};padding:10px 14px 10px 18px;border-left:4px solid ${sevC}">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
@@ -1498,8 +1542,9 @@ function generateHTML(investigation, findings, iocs, analyst, settings, lang) {
         </div>
         <div style="padding:16px 18px">
           <h4 style="margin:0 0 10px;font-size:15px;font-weight:700;color:#111827;line-height:1.4">${esc(f.title || rs('no_title', lang))}</h4>
-          ${f.description ? `<p style="margin:0 0 12px;color:#374151;font-size:14px;line-height:1.7">${esc(f.description)}</p>` : ''}
+          ${contentHtml}
           ${codeHtml}
+          ${shotsHtml}
         </div>
       </div>`;
     }).join('');
